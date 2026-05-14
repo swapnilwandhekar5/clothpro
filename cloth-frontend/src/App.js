@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Login from "./Login";
+import AdminPanel from "./AdminPanel";
 
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
@@ -86,9 +87,13 @@ function App() {
     fetchSales();
   }, [user]);
 
-  if (!user) {
-    return <Login setUser={setUser} />;
-  }
+  if (window.location.pathname === "/admin") {
+  return <AdminPanel />;
+}
+
+if (!user) {
+  return <Login setUser={setUser} />;
+}
 
   const fetchProducts = async () => {
     if (!user) return;
