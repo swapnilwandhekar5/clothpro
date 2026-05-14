@@ -57,11 +57,44 @@ function App() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
   const [analyticsRange, setAnalyticsRange] = useState("daily");
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const savedUser = JSON.parse(localStorage.getItem("clothUser"));
+      if (!savedUser) return;
+
+      const res = await fetch(
+        `https://clothpro.onrender.com/api/product/all/${savedUser.shopId}`
+      );
+
+      const data = await res.json();
+      setProducts(data);
+    };
+
+    const fetchSales = async () => {
+      const savedUser = JSON.parse(localStorage.getItem("clothUser"));
+      if (!savedUser) return;
+
+      const res = await fetch(
+        `https://clothpro.onrender.com/api/sales/all/${savedUser.shopId}`
+      );
+
+      const data = await res.json();
+      setSales(data);
+    };
+
+    fetchProducts();
+    fetchSales();
+  }, [user]);
+
+  if (!user) {
+    return <Login setUser={setUser} />;
+  }
+
   const fetchProducts = async () => {
     if (!user) return;
 
     const res = await fetch(
-      `https://clothpro.onrender.com/api/product/all//${user.shopId}`
+      `https://clothpro.onrender.com/api/product/all/${user.shopId}`
     );
 
     const data = await res.json();
@@ -78,17 +111,6 @@ function App() {
     const data = await res.json();
     setSales(data);
   };
-
- useEffect(() => {
-  fetchProducts();
-  fetchSales();
-
-  // eslint-disable-next-line
-}, [user]);
-
-  if (!user) {
-    return <Login setUser={setUser} />;
-  }
 
   const addProduct = async () => {
     if (!name || !price || !costPrice || !quantity || !barcode) {
@@ -136,9 +158,12 @@ function App() {
     const newName = prompt("Enter New Product Name");
     if (!newName) return;
 
-    await fetch(`https://clothpro.onrender.com/api/product/update/${id}?name=${newName}`, {
-      method: "PUT",
-    });
+    await fetch(
+      `https://clothpro.onrender.com/api/product/update/${id}?name=${newName}`,
+      {
+        method: "PUT",
+      }
+    );
 
     fetchProducts();
   };
@@ -155,12 +180,21 @@ function App() {
       setCart(
         cart.map((item) =>
           item._id === product._id
-            ? { ...item, qty: item.qty + 1 }
+            ? {
+                ...item,
+                qty: item.qty + 1,
+              }
             : item
         )
       );
     } else {
-      setCart([...cart, { ...product, qty: 1 }]);
+      setCart([
+        ...cart,
+        {
+          ...product,
+          qty: 1,
+        },
+      ]);
     }
 
     setActiveMenu("billing");
@@ -183,7 +217,12 @@ function App() {
   const increaseQty = (id) => {
     setCart(
       cart.map((item) =>
-        item._id === id ? { ...item, qty: item.qty + 1 } : item
+        item._id === id
+          ? {
+              ...item,
+              qty: item.qty + 1,
+            }
+          : item
       )
     );
   };
@@ -192,7 +231,10 @@ function App() {
     setCart(
       cart.map((item) =>
         item._id === id
-          ? { ...item, qty: item.qty > 1 ? item.qty - 1 : 1 }
+          ? {
+              ...item,
+              qty: item.qty > 1 ? item.qty - 1 : 1,
+            }
           : item
       )
     );
@@ -291,7 +333,6 @@ function App() {
 
   const productChartData = Object.values(productMap);
 
-  
   const revenueChartData = filteredSales.map((sale) => ({
     date: new Date(sale.date).toLocaleDateString(),
     revenue: Number(sale.total),
@@ -326,8 +367,8 @@ function App() {
 
     doc.setFontSize(11);
     doc.text(`Range: ${analyticsRange}`, 14, 30);
-    doc.text(`Revenue: ₹${totalRevenue}`, 14, 38);
-    doc.text(`Profit: ₹${totalProfit}`, 14, 46);
+    doc.text(`Revenue: Rs ${totalRevenue}`, 14, 38);
+    doc.text(`Profit: Rs ${totalProfit}`, 14, 46);
 
     autoTable(doc, {
       startY: 55,
@@ -336,8 +377,8 @@ function App() {
         item.invoiceNumber || "-",
         item.productName,
         item.quantity,
-        `₹${item.total}`,
-        `₹${item.profit || 0}`,
+        `Rs ${item.total}`,
+        `Rs ${item.profit || 0}`,
         new Date(item.date).toLocaleDateString(),
       ]),
     });
@@ -351,7 +392,7 @@ function App() {
         (item) => `
         <tr>
           <td>${item.name} x ${item.qty}</td>
-          <td align="right">₹${item.price * item.qty}</td>
+          <td align="right">Rs ${item.price * item.qty}</td>
         </tr>
       `
       )
@@ -390,10 +431,12 @@ function App() {
           <div class="line"></div>
 
           <table>
-            <tr><td>Subtotal</td><td align="right">₹${subtotal}</td></tr>
-            <tr><td>GST</td><td align="right">₹${gst.toFixed(2)}</td></tr>
-            <tr><td>Discount</td><td align="right">- ₹${discountAmount}</td></tr>
-            <tr class="total"><td>Total</td><td align="right">₹${finalTotal.toFixed(2)}</td></tr>
+            <tr><td>Subtotal</td><td align="right">Rs ${subtotal}</td></tr>
+            <tr><td>GST</td><td align="right">Rs ${gst.toFixed(2)}</td></tr>
+            <tr><td>Discount</td><td align="right">- Rs ${discountAmount}</td></tr>
+            <tr class="total"><td>Total</td><td align="right">Rs ${finalTotal.toFixed(
+              2
+            )}</td></tr>
           </table>
 
           <div class="line"></div>
@@ -534,15 +577,13 @@ function App() {
               >
                 <FaShoppingCart size={40} />
                 <h2 className="text-2xl mt-6">Inventory Value</h2>
-                <h1 className="text-5xl font-bold mt-4">₹{totalValue}</h1>
+                <h1 className="text-5xl font-bold mt-4">Rs {totalValue}</h1>
               </motion.div>
             </div>
 
             {lowStockProducts.length > 0 && (
               <div className="mt-10 bg-red-500/20 border border-red-500 p-6 rounded-3xl">
-                <h2 className="text-3xl font-bold mb-4">
-                  ⚠ Low Stock Alert
-                </h2>
+                <h2 className="text-3xl font-bold mb-4">⚠ Low Stock Alert</h2>
 
                 <div className="space-y-3">
                   {lowStockProducts.map((item) => (
@@ -569,12 +610,47 @@ function App() {
               <h2 className="text-3xl font-bold mb-6">Add Product</h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-                <input className="bg-slate-900 p-4 rounded-2xl" placeholder="Product Name" value={name} onChange={(e) => setName(e.target.value)} />
-                <input className="bg-slate-900 p-4 rounded-2xl" placeholder="Selling Price" value={price} onChange={(e) => setPrice(e.target.value)} />
-                <input className="bg-slate-900 p-4 rounded-2xl" placeholder="Cost Price" value={costPrice} onChange={(e) => setCostPrice(e.target.value)} />
-                <input className="bg-slate-900 p-4 rounded-2xl" placeholder="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
-                <input className="bg-slate-900 p-4 rounded-2xl" placeholder="Image URL" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
-                <input className="bg-slate-900 p-4 rounded-2xl" placeholder="Barcode Number" value={barcode} onChange={(e) => setBarcode(e.target.value)} />
+                <input
+                  className="bg-slate-900 p-4 rounded-2xl"
+                  placeholder="Product Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+
+                <input
+                  className="bg-slate-900 p-4 rounded-2xl"
+                  placeholder="Selling Price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+
+                <input
+                  className="bg-slate-900 p-4 rounded-2xl"
+                  placeholder="Cost Price"
+                  value={costPrice}
+                  onChange={(e) => setCostPrice(e.target.value)}
+                />
+
+                <input
+                  className="bg-slate-900 p-4 rounded-2xl"
+                  placeholder="Quantity"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
+
+                <input
+                  className="bg-slate-900 p-4 rounded-2xl"
+                  placeholder="Image URL"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                />
+
+                <input
+                  className="bg-slate-900 p-4 rounded-2xl"
+                  placeholder="Barcode Number"
+                  value={barcode}
+                  onChange={(e) => setBarcode(e.target.value)}
+                />
 
                 <button
                   onClick={addProduct}
@@ -615,9 +691,12 @@ function App() {
 
                   <tbody>
                     {products
-                      .filter((item) =>
-                        item.name.toLowerCase().includes(search.toLowerCase()) ||
-                        String(item.barcode || "").includes(search)
+                      .filter(
+                        (item) =>
+                          item.name
+                            .toLowerCase()
+                            .includes(search.toLowerCase()) ||
+                          String(item.barcode || "").includes(search)
                       )
                       .map((item) => (
                         <tr key={item._id} className="border-b border-white/5">
@@ -637,8 +716,8 @@ function App() {
 
                           <td className="p-4">{item.name}</td>
                           <td className="p-4">{item.barcode || "-"}</td>
-                          <td className="p-4">₹{item.price}</td>
-                          <td className="p-4">₹{item.costPrice || 0}</td>
+                          <td className="p-4">Rs {item.price}</td>
+                          <td className="p-4">Rs {item.costPrice || 0}</td>
                           <td className="p-4">{item.quantity}</td>
 
                           <td className="p-4">
@@ -722,13 +801,13 @@ function App() {
               <div className="bg-gradient-to-br from-green-600 to-emerald-400 p-8 rounded-3xl">
                 <FaMoneyBillWave size={40} />
                 <h2 className="text-2xl mt-6">Revenue</h2>
-                <h1 className="text-4xl font-bold mt-4">₹{totalRevenue}</h1>
+                <h1 className="text-4xl font-bold mt-4">Rs {totalRevenue}</h1>
               </div>
 
               <div className="bg-gradient-to-br from-blue-600 to-cyan-500 p-8 rounded-3xl">
                 <FaMoneyBillWave size={40} />
                 <h2 className="text-2xl mt-6">Profit</h2>
-                <h1 className="text-4xl font-bold mt-4">₹{totalProfit}</h1>
+                <h1 className="text-4xl font-bold mt-4">Rs {totalProfit}</h1>
               </div>
 
               <div className="bg-gradient-to-br from-orange-600 to-yellow-400 p-8 rounded-3xl">
@@ -746,7 +825,9 @@ function App() {
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
               <div className="bg-white/5 rounded-3xl p-6 lg:p-8">
-                <h2 className="text-3xl font-bold mb-6">Revenue & Profit Chart</h2>
+                <h2 className="text-3xl font-bold mb-6">
+                  Revenue & Profit Chart
+                </h2>
 
                 <div style={{ height: 320 }}>
                   <ResponsiveContainer width="100%" height="100%">
@@ -755,15 +836,27 @@ function App() {
                       <XAxis dataKey="date" stroke="#94a3b8" />
                       <YAxis stroke="#94a3b8" />
                       <Tooltip />
-                      <Line type="monotone" dataKey="revenue" stroke="#38bdf8" strokeWidth={4} />
-                      <Line type="monotone" dataKey="profit" stroke="#22c55e" strokeWidth={4} />
+                      <Line
+                        type="monotone"
+                        dataKey="revenue"
+                        stroke="#38bdf8"
+                        strokeWidth={4}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="profit"
+                        stroke="#22c55e"
+                        strokeWidth={4}
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
               <div className="bg-white/5 rounded-3xl p-6 lg:p-8">
-                <h2 className="text-3xl font-bold mb-6">Product Performance</h2>
+                <h2 className="text-3xl font-bold mb-6">
+                  Product Performance
+                </h2>
 
                 <div style={{ height: 320 }}>
                   <ResponsiveContainer width="100%" height="100%">
@@ -846,7 +939,7 @@ function App() {
 
                           <div>
                             <h2 className="font-bold text-xl">{item.name}</h2>
-                            <p>₹{item.price}</p>
+                            <p>Rs {item.price}</p>
                             <p className="text-slate-400 text-sm">
                               Barcode: {item.barcode || "-"}
                             </p>
@@ -880,7 +973,7 @@ function App() {
                       </div>
 
                       <div className="mt-4 text-right text-xl font-bold">
-                        Total: ₹{item.price * item.qty}
+                        Total: Rs {item.price * item.qty}
                       </div>
                     </div>
                   ))}
@@ -893,22 +986,22 @@ function App() {
                 <div className="space-y-4 text-xl">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>₹{subtotal}</span>
+                    <span>Rs {subtotal}</span>
                   </div>
 
                   <div className="flex justify-between">
                     <span>GST (18%)</span>
-                    <span>₹{gst.toFixed(2)}</span>
+                    <span>Rs {gst.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between">
                     <span>Discount</span>
-                    <span>- ₹{discountAmount}</span>
+                    <span>- Rs {discountAmount}</span>
                   </div>
 
                   <div className="flex justify-between text-3xl font-bold border-t border-white/10 pt-4">
                     <span>Total</span>
-                    <span>₹{finalTotal.toFixed(2)}</span>
+                    <span>Rs {finalTotal.toFixed(2)}</span>
                   </div>
                 </div>
 
