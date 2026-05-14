@@ -61,7 +61,7 @@ function App() {
     if (!user) return;
 
     const res = await fetch(
-      `http://localhost:5000/api/product/all/${user.shopId}`
+      `https://clothpro.onrender.com/product/all/${user.shopId}`
     );
 
     const data = await res.json();

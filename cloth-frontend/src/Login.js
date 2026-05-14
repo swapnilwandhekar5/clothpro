@@ -19,8 +19,8 @@ function Login({ setUser }) {
   const submitHandler = async () => {
     try {
       const url = isLogin
-        ? "http://localhost:5000/api/auth/login"
-        : "http://localhost:5000/api/auth/register";
+        ? "hhttps://clothpro.onrender.com/api/auth/login"
+        : "https://clothpro.onrender.com/api/auth/register";
 
       const bodyData = isLogin
         ? {
