@@ -9,6 +9,22 @@ const userSchema = new mongoose.Schema({
   },
   password: String,
   shopId: String,
+
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+
+  plan: {
+    type: String,
+    default: "free",
+  },
+
+  expiryDate: {
+    type: Date,
+    default: null,
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,
