@@ -61,7 +61,7 @@ function App() {
     if (!user) return;
 
     const res = await fetch(
-      `https://clothpro.onrender.com/product/all/${user.shopId}`
+      `https://clothpro.onrender.com/api/product/all//${user.shopId}`
     );
 
     const data = await res.json();
@@ -72,17 +72,19 @@ function App() {
     if (!user) return;
 
     const res = await fetch(
-      `http://localhost:5000/api/sales/all/${user.shopId}`
+      `https://clothpro.onrender.com/api/sales/all/${user.shopId}`
     );
 
     const data = await res.json();
     setSales(data);
   };
 
-  useEffect(() => {
-    fetchProducts();
-    fetchSales();
-  }, [user]);
+ useEffect(() => {
+  fetchProducts();
+  fetchSales();
+
+  // eslint-disable-next-line
+}, [user]);
 
   if (!user) {
     return <Login setUser={setUser} />;
@@ -94,7 +96,7 @@ function App() {
       return;
     }
 
-    await fetch("http://localhost:5000/api/product/add", {
+    await fetch("https://clothpro.onrender.com/api/product/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -123,7 +125,7 @@ function App() {
   };
 
   const deleteProduct = async (id) => {
-    await fetch(`http://localhost:5000/api/product/delete/${id}`, {
+    await fetch(`https://clothpro.onrender.com/api/product/delete/${id}`, {
       method: "DELETE",
     });
 
@@ -134,7 +136,7 @@ function App() {
     const newName = prompt("Enter New Product Name");
     if (!newName) return;
 
-    await fetch(`http://localhost:5000/api/product/update/${id}?name=${newName}`, {
+    await fetch(`https://clothpro.onrender.com/api/product/update/${id}?name=${newName}`, {
       method: "PUT",
     });
 
@@ -289,13 +291,7 @@ function App() {
 
   const productChartData = Object.values(productMap);
 
-  const bestProductName =
-    productChartData.length > 0
-      ? productChartData.reduce((a, b) =>
-          a.quantity > b.quantity ? a : b
-        ).product
-      : "None";
-
+  
   const revenueChartData = filteredSales.map((sale) => ({
     date: new Date(sale.date).toLocaleDateString(),
     revenue: Number(sale.total),
@@ -426,7 +422,7 @@ function App() {
           (Number(item.price) - Number(item.costPrice || 0)) *
           Number(item.qty);
 
-        await fetch("http://localhost:5000/api/sales/add", {
+        await fetch("https://clothpro.onrender.com/api/sales/add", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -444,7 +440,7 @@ function App() {
         });
 
         await fetch(
-          `http://localhost:5000/api/product/update/${item._id}?quantity=${
+          `https://clothpro.onrender.com/api/product/update/${item._id}?quantity=${
             Number(item.quantity) - Number(item.qty)
           }`,
           {
