@@ -2,10 +2,14 @@ import { useState } from "react";
 
 function Login({ setUser }) {
   const [isLogin, setIsLogin] = useState(true);
+
   const [shopName, setShopName] = useState("");
   const [ownerName, setOwnerName] = useState("");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [expired, setExpired] = useState(false);
 
   const submitHandler = async () => {
     try {
@@ -15,7 +19,12 @@ function Login({ setUser }) {
 
       const bodyData = isLogin
         ? { email, password }
-        : { shopName, ownerName, email, password };
+        : {
+            shopName,
+            ownerName,
+            email,
+            password,
+          };
 
       const res = await fetch(url, {
         method: "POST",
@@ -26,24 +35,69 @@ function Login({ setUser }) {
       });
 
       const data = await res.json();
-      alert(data.message);
 
-      if (data.success) {
-        localStorage.setItem("clothUser", JSON.stringify(data.user));
-        localStorage.setItem("clothToken", data.token);
-        setUser(data.user);
+      if (!data.success) {
+        alert(data.message);
+
+        if (data.message === "Subscription Expired") {
+          setExpired(true);
+        }
+
+        return;
       }
+
+      localStorage.setItem("clothUser", JSON.stringify(data.user));
+      localStorage.setItem("clothToken", data.token);
+
+      setUser(data.user);
+
+      alert(data.message);
     } catch (error) {
       console.log(error);
-      alert("Login Error ❌");
+      alert("Something went wrong ❌");
     }
   };
 
+  if (expired) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex justify-center items-center p-6">
+        <div className="bg-white/5 border border-red-500 p-10 rounded-3xl w-full max-w-md text-center text-white">
+          <h1 className="text-5xl mb-6">🚫</h1>
+
+          <h2 className="text-3xl font-bold mb-4">
+            Subscription Expired
+          </h2>
+
+          <p className="text-slate-300 mb-8">
+            Your ClothPro subscription has expired.
+            Please renew your plan to continue using the software.
+          </p>
+
+          <a
+            href="https://wa.me/9270725044"
+            target="_blank"
+            rel="noreferrer"
+            className="block w-full bg-green-500 hover:bg-green-600 p-4 rounded-2xl text-xl font-bold transition"
+          >
+            Renew on WhatsApp
+          </a>
+
+          <button
+            onClick={() => setExpired(false)}
+            className="mt-4 text-slate-400 hover:text-white"
+          >
+            Back To Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-950 flex justify-center items-center">
-      <div className="bg-white/5 backdrop-blur-xl p-10 rounded-3xl w-[400px] border border-white/10 shadow-2xl">
+    <div className="min-h-screen bg-slate-950 flex justify-center items-center p-6">
+      <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl w-full max-w-md shadow-2xl">
         <h1 className="text-white text-4xl font-bold mb-8 text-center">
-          {isLogin ? "🏪 Shop Login" : "🚀 Create Shop"}
+          {isLogin ? "👕 ClothPro Login" : "🚀 Create Shop"}
         </h1>
 
         {!isLogin && (
@@ -90,7 +144,9 @@ function Login({ setUser }) {
           onClick={() => setIsLogin(!isLogin)}
           className="text-center text-slate-400 mt-6 cursor-pointer hover:text-white transition"
         >
-          {isLogin ? "Create New Shop" : "Already have account?"}
+          {isLogin
+            ? "Create New Shop"
+            : "Already have account?"}
         </p>
       </div>
     </div>

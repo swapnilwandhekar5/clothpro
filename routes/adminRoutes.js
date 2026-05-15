@@ -7,7 +7,7 @@ const User = require("../models/User");
 router.get("/create-admin", async (req, res) => {
   try {
     const existingAdmin = await Admin.findOne({
-      email: "admin@clothpro.com",
+      email: "swapnil@clothpro.com",
     });
 
     if (existingAdmin) {
@@ -18,8 +18,8 @@ router.get("/create-admin", async (req, res) => {
     }
 
     const admin = new Admin({
-      email: "admin@clothpro.com",
-      password: "admin123",
+      email: "swapnil@clothpro.com",
+      password: "Swapnil@2026",
     });
 
     await admin.save();
@@ -27,8 +27,8 @@ router.get("/create-admin", async (req, res) => {
     res.json({
       success: true,
       message: "Admin created successfully",
-      email: "admin@clothpro.com",
-      password: "admin123",
+      email: "swapnil@clothpro.com",
+      password: "Swapnil@2026",
     });
   } catch (error) {
     res.json({
@@ -89,7 +89,7 @@ router.put("/toggle/:id", async (req, res) => {
 
     res.json({
       success: true,
-      message: "Shop Status Updated",
+      message: "Shop Status Updated ✅",
     });
   } catch (error) {
     res.json({
@@ -101,16 +101,25 @@ router.put("/toggle/:id", async (req, res) => {
 
 router.put("/plan/:id", async (req, res) => {
   try {
-    const { plan, expiryDate } = req.body;
+    const {
+      plan,
+      expiryDate,
+      subscriptionStatus,
+      licenseToken,
+      isActive,
+    } = req.body;
 
     await User.findByIdAndUpdate(req.params.id, {
       plan,
       expiryDate,
+      subscriptionStatus,
+      licenseToken,
+      isActive,
     });
 
     res.json({
       success: true,
-      message: "Plan Updated",
+      message: "Subscription Updated ✅",
     });
   } catch (error) {
     res.json({

@@ -10,6 +10,16 @@ const userSchema = new mongoose.Schema({
   password: String,
   shopId: String,
 
+  licenseToken: {
+    type: String,
+    default: "",
+  },
+
+  subscriptionStatus: {
+    type: String,
+    default: "trial",
+  },
+
   isActive: {
     type: Boolean,
     default: true,
