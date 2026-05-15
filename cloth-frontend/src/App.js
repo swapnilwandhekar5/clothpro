@@ -1017,34 +1017,37 @@ if (!user) {
                   <FaPrint className="inline mr-2" />
                   Save & Print Bill
                   <button
+  <button
   onClick={() => {
-    const itemsText = cart
-      .map(
-        (item) =>
-          `${item.name} x ${item.qty} = Rs ${
-            Number(item.price) * Number(item.qty)
-          }`
-      )
-      .join("\n");
-
     const message = `
-🧾 ClothPro Invoice
+🧾 *${user.shopName}*
 
-🏪 Shop: ${user.shopName}
+━━━━━━━━━━━━━━
+Customer: ${customerName || "Walk-in"}
+Date: ${new Date().toLocaleDateString()}
+━━━━━━━━━━━━━━
 
-👤 Customer: ${customerName || "Walk-in"}
+${cart
+  .map(
+    (item) =>
+      `▪ ${item.name}
+Qty: ${item.qty} × Rs ${item.price}
+Amount: Rs ${item.price * item.qty}`
+  )
+  .join("\n\n")}
 
-${itemsText}
+━━━━━━━━━━━━━━
+Subtotal : Rs ${subtotal}
+GST (18%) : Rs ${gst.toFixed(2)}
+Discount : Rs ${discountAmount}
 
--------------------
-Subtotal: Rs ${subtotal}
-GST: Rs ${gst.toFixed(2)}
-Discount: Rs ${discountAmount}
+💰 *Grand Total : Rs ${finalTotal.toFixed(2)}*
+━━━━━━━━━━━━━━
 
-💰 Total: Rs ${finalTotal.toFixed(2)}
+🙏 Thank You
+Visit Again
 
-Thank you 😊
-Visit Again ❤️
+Powered By ClothPro
 `;
 
     const whatsappUrl =
