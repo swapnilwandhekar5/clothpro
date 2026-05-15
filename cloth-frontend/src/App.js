@@ -1016,6 +1016,46 @@ if (!user) {
                 >
                   <FaPrint className="inline mr-2" />
                   Save & Print Bill
+                  <button
+  onClick={() => {
+    const itemsText = cart
+      .map(
+        (item) =>
+          `${item.name} x ${item.qty} = Rs ${
+            Number(item.price) * Number(item.qty)
+          }`
+      )
+      .join("\n");
+
+    const message = `
+🧾 ClothPro Invoice
+
+🏪 Shop: ${user.shopName}
+
+👤 Customer: ${customerName || "Walk-in"}
+
+${itemsText}
+
+-------------------
+Subtotal: Rs ${subtotal}
+GST: Rs ${gst.toFixed(2)}
+Discount: Rs ${discountAmount}
+
+💰 Total: Rs ${finalTotal.toFixed(2)}
+
+Thank you 😊
+Visit Again ❤️
+`;
+
+    const whatsappUrl =
+      "https://wa.me/?text=" + encodeURIComponent(message);
+
+    window.open(whatsappUrl, "_blank");
+  }}
+  className="w-full mt-4 bg-green-500 hover:bg-green-600 p-4 rounded-2xl text-xl font-bold"
+>
+  WhatsApp Invoice
+</button>
                 </button>
               </div>
             </div>
