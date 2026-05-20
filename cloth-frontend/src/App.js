@@ -316,6 +316,8 @@ function App() {
   const [staffCommission, setStaffCommission] = useState("");
   const [unitType, setUnitType] = useState("");
   const [supplierName, setSupplierName] = useState("");
+  const [orderType, setOrderType] = useState("Dine-in");
+  const [tableNumber, setTableNumber] = useState("");
 
   const [search, setSearch] = useState("");
   const [barcodeSearch, setBarcodeSearch] = useState("");
@@ -868,6 +870,57 @@ function App() {
     win.print();
   };
 
+  const printKOT = () => {
+    if (cart.length === 0) {
+      alert("Cart empty ❌");
+      return;
+    }
+
+    const kotItems = cart
+      .map(
+        (item) => `
+        <tr>
+          <td>${item.name}</td>
+          <td align="right">${item.qty}</td>
+        </tr>
+      `
+      )
+      .join("");
+
+    const win = window.open("", "", "width=350,height=700");
+
+    win.document.write(`
+      <html>
+        <head>
+          <title>Kitchen Order Ticket</title>
+          <style>
+            body{font-family: monospace;width:280px;padding:10px;}
+            h2,p{text-align:center;margin:4px 0;}
+            table{width:100%;border-collapse:collapse;margin-top:10px;}
+            td{padding:6px 0;font-size:16px;}
+            .line{border-top:1px dashed black;margin:8px 0;}
+            .big{font-size:18px;font-weight:bold;}
+          </style>
+        </head>
+        <body>
+          <h2>KOT</h2>
+          <p>${user.shopName}</p>
+          <div class="line"></div>
+          <p class="big">Order: ${orderType}</p>
+          <p class="big">Table: ${tableNumber || "-"}</p>
+          <p>Date: ${new Date().toLocaleString()}</p>
+          <div class="line"></div>
+          <table>${kotItems}</table>
+          <div class="line"></div>
+          <p>Send To Kitchen</p>
+        </body>
+      </html>
+    `);
+
+    win.document.close();
+    win.print();
+  };
+
   const sendWhatsAppInvoice = () => {
     if (cart.length === 0) {
       alert("Cart empty ❌");
@@ -879,6 +932,8 @@ function App() {
 
 ${ui.billingTitle}
 Customer: ${customerName || "Walk-in"}
+${category === "Restaurant" ? `Order Type: ${orderType}
+Table: ${tableNumber || "-"}` : ""}
 Date: ${new Date().toLocaleDateString()}
 
 ━━━━━━━━━━━━━━
@@ -949,6 +1004,8 @@ Powered By SmartBiz OS
       setCart([]);
       setCustomerName("");
       setDiscount(0);
+      setOrderType("Dine-in");
+      setTableNumber("");
       fetchProducts();
       fetchSales();
       alert("Sale Saved ✅");
@@ -1364,6 +1421,31 @@ Powered By SmartBiz OS
                   onChange={(e) => setDiscount(e.target.value)}
                 />
 
+                {category === "Restaurant" && (
+                  <div className="bg-slate-900 p-5 rounded-3xl mb-6 border border-orange-500/30">
+                    <h3 className="text-2xl font-bold mb-4">🍽 Restaurant Order Details</h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <select
+                        className="bg-slate-800 p-4 rounded-2xl"
+                        value={orderType}
+                        onChange={(e) => setOrderType(e.target.value)}
+                      >
+                        <option>Dine-in</option>
+                        <option>Takeaway</option>
+                        <option>Delivery</option>
+                      </select>
+
+                      <input
+                        className="bg-slate-800 p-4 rounded-2xl"
+                        placeholder="Table Number"
+                        value={tableNumber}
+                        onChange={(e) => setTableNumber(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-4">
                   {cart.map((item) => (
                     <div key={item._id} className="bg-slate-900 p-4 rounded-2xl">
@@ -1422,6 +1504,19 @@ Powered By SmartBiz OS
               <div className="bg-slate-900 p-6 lg:p-8 rounded-3xl">
                 <h2 className="text-3xl font-bold mb-8">{ui.billingTitle} Invoice</h2>
 
+                {category === "Restaurant" && (
+                  <div className="mb-6 bg-orange-500/10 border border-orange-500/30 p-4 rounded-2xl">
+                    <div className="flex justify-between text-lg mb-2">
+                      <span>Order Type</span>
+                      <span className="font-bold">{orderType}</span>
+                    </div>
+                    <div className="flex justify-between text-lg">
+                      <span>Table</span>
+                      <span className="font-bold">{tableNumber || "-"}</span>
+                    </div>
+                  </div>
+                )
+
                 {qrImage && (
                   <div className="flex flex-col items-center mb-6 bg-white/5 p-5 rounded-3xl border border-green-500/30">
                     <img
@@ -1455,9 +1550,18 @@ Powered By SmartBiz OS
                   </div>
                 </div>
 
+                {category === "Restaurant" && (
+                  <button
+                    onClick={printKOT}
+                    className="w-full mt-10 bg-orange-500 hover:bg-orange-600 p-4 rounded-2xl text-xl font-bold"
+                  >
+                    🍽 Print KOT
+                  </button>
+                )}
+
                 <button
                   onClick={saveSale}
-                  className="w-full mt-10 bg-gradient-to-r from-blue-500 to-cyan-500 p-4 rounded-2xl text-xl font-bold"
+                  className={`${category === "Restaurant" ? "mt-4" : "mt-10"} w-full bg-gradient-to-r from-blue-500 to-cyan-500 p-4 rounded-2xl text-xl font-bold`}
                 >
                   <FaPrint className="inline mr-2" />
                   Save & Print Bill
