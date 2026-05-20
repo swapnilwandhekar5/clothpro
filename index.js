@@ -6,6 +6,7 @@ const productRoutes = require("./routes/product");
 const salesRoutes = require("./routes/sales");
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/adminRoutes");
+const customerRoutes = require("./routes/customer");
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use("/api/product", productRoutes);
 app.use("/api/sales", salesRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/customer", customerRoutes);
 
 mongoose
   .connect(
