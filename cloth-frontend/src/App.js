@@ -298,6 +298,25 @@ function App() {
   const [imageUrl, setImageUrl] = useState("");
   const [barcode, setBarcode] = useState("");
 
+  const [size, setSize] = useState("");
+  const [color, setColor] = useState("");
+  const [brand, setBrand] = useState("");
+  const [mrp, setMrp] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [unit, setUnit] = useState("");
+  const [batchNo, setBatchNo] = useState("");
+  const [medicineType, setMedicineType] = useState("");
+  const [imeiNumber, setImeiNumber] = useState("");
+  const [serialNumber, setSerialNumber] = useState("");
+  const [warranty, setWarranty] = useState("");
+  const [modelNumber, setModelNumber] = useState("");
+  const [itemType, setItemType] = useState("");
+  const [kitchenCategory, setKitchenCategory] = useState("");
+  const [serviceDuration, setServiceDuration] = useState("");
+  const [staffCommission, setStaffCommission] = useState("");
+  const [unitType, setUnitType] = useState("");
+  const [supplierName, setSupplierName] = useState("");
+
   const [search, setSearch] = useState("");
   const [barcodeSearch, setBarcodeSearch] = useState("");
   const [customerName, setCustomerName] = useState("");
@@ -309,6 +328,136 @@ function App() {
   const upiId = "swapnilwandhekar143sp@okaxis";
   const category = user?.businessCategory || "Clothing";
   const ui = uiByCategory[category] || uiByCategory.Other;
+
+  const renderCategoryFields = () => {
+    const inputClass = "bg-slate-900 p-4 rounded-2xl";
+
+    if (category === "Clothing" || category === "Footwear") {
+      return (
+        <>
+          <input className={inputClass} placeholder="Size" value={size} onChange={(e) => setSize(e.target.value)} />
+          <input className={inputClass} placeholder="Color" value={color} onChange={(e) => setColor(e.target.value)} />
+          <input className={inputClass} placeholder="Brand" value={brand} onChange={(e) => setBrand(e.target.value)} />
+        </>
+      );
+    }
+
+    if (category === "Grocery") {
+      return (
+        <>
+          <input className={inputClass} placeholder="MRP" value={mrp} onChange={(e) => setMrp(e.target.value)} />
+          <input className={inputClass} placeholder="Expiry Date" type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+          <input className={inputClass} placeholder="Unit e.g. kg / packet / litre" value={unit} onChange={(e) => setUnit(e.target.value)} />
+          <input className={inputClass} placeholder="Brand" value={brand} onChange={(e) => setBrand(e.target.value)} />
+        </>
+      );
+    }
+
+    if (category === "Medical") {
+      return (
+        <>
+          <input className={inputClass} placeholder="Batch No" value={batchNo} onChange={(e) => setBatchNo(e.target.value)} />
+          <input className={inputClass} placeholder="Expiry Date" type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+          <input className={inputClass} placeholder="Medicine Type" value={medicineType} onChange={(e) => setMedicineType(e.target.value)} />
+          <input className={inputClass} placeholder="MRP" value={mrp} onChange={(e) => setMrp(e.target.value)} />
+        </>
+      );
+    }
+
+    if (category === "Mobile Shop") {
+      return (
+        <>
+          <input className={inputClass} placeholder="IMEI Number" value={imeiNumber} onChange={(e) => setImeiNumber(e.target.value)} />
+          <input className={inputClass} placeholder="Model Number" value={modelNumber} onChange={(e) => setModelNumber(e.target.value)} />
+          <input className={inputClass} placeholder="Warranty" value={warranty} onChange={(e) => setWarranty(e.target.value)} />
+          <input className={inputClass} placeholder="Brand" value={brand} onChange={(e) => setBrand(e.target.value)} />
+        </>
+      );
+    }
+
+    if (category === "Electronics") {
+      return (
+        <>
+          <input className={inputClass} placeholder="Serial Number" value={serialNumber} onChange={(e) => setSerialNumber(e.target.value)} />
+          <input className={inputClass} placeholder="Model Number" value={modelNumber} onChange={(e) => setModelNumber(e.target.value)} />
+          <input className={inputClass} placeholder="Warranty" value={warranty} onChange={(e) => setWarranty(e.target.value)} />
+          <input className={inputClass} placeholder="Brand" value={brand} onChange={(e) => setBrand(e.target.value)} />
+        </>
+      );
+    }
+
+    if (category === "Restaurant") {
+      return (
+        <>
+          <input className={inputClass} placeholder="Item Type e.g. Food / Drink" value={itemType} onChange={(e) => setItemType(e.target.value)} />
+          <input className={inputClass} placeholder="Kitchen Category" value={kitchenCategory} onChange={(e) => setKitchenCategory(e.target.value)} />
+          <input className={inputClass} placeholder="Unit e.g. plate / kg" value={unit} onChange={(e) => setUnit(e.target.value)} />
+        </>
+      );
+    }
+
+    if (category === "Salon") {
+      return (
+        <>
+          <input className={inputClass} placeholder="Service Duration e.g. 30 min" value={serviceDuration} onChange={(e) => setServiceDuration(e.target.value)} />
+          <input className={inputClass} placeholder="Staff Commission" value={staffCommission} onChange={(e) => setStaffCommission(e.target.value)} />
+          <input className={inputClass} placeholder="Service / Product Type" value={itemType} onChange={(e) => setItemType(e.target.value)} />
+        </>
+      );
+    }
+
+    if (category === "Hardware") {
+      return (
+        <>
+          <input className={inputClass} placeholder="Unit Type e.g. pcs / kg / meter" value={unitType} onChange={(e) => setUnitType(e.target.value)} />
+          <input className={inputClass} placeholder="Supplier Name" value={supplierName} onChange={(e) => setSupplierName(e.target.value)} />
+          <input className={inputClass} placeholder="Brand" value={brand} onChange={(e) => setBrand(e.target.value)} />
+        </>
+      );
+    }
+
+    if (category === "Cosmetics") {
+      return (
+        <>
+          <input className={inputClass} placeholder="Brand" value={brand} onChange={(e) => setBrand(e.target.value)} />
+          <input className={inputClass} placeholder="MRP" value={mrp} onChange={(e) => setMrp(e.target.value)} />
+          <input className={inputClass} placeholder="Expiry Date" type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+        </>
+      );
+    }
+
+    return (
+      <>
+        <input className={inputClass} placeholder="Brand / Type" value={brand} onChange={(e) => setBrand(e.target.value)} />
+        <input className={inputClass} placeholder="Unit" value={unit} onChange={(e) => setUnit(e.target.value)} />
+      </>
+    );
+  };
+
+  const getProductDetails = (item) => {
+    const details = [];
+
+    if (item.size) details.push(`Size: ${item.size}`);
+    if (item.color) details.push(`Color: ${item.color}`);
+    if (item.brand) details.push(`Brand: ${item.brand}`);
+    if (item.mrp) details.push(`MRP: Rs ${item.mrp}`);
+    if (item.expiryDate) details.push(`Exp: ${item.expiryDate}`);
+    if (item.unit) details.push(`Unit: ${item.unit}`);
+    if (item.batchNo) details.push(`Batch: ${item.batchNo}`);
+    if (item.medicineType) details.push(`Type: ${item.medicineType}`);
+    if (item.imeiNumber) details.push(`IMEI: ${item.imeiNumber}`);
+    if (item.serialNumber) details.push(`Serial: ${item.serialNumber}`);
+    if (item.warranty) details.push(`Warranty: ${item.warranty}`);
+    if (item.modelNumber) details.push(`Model: ${item.modelNumber}`);
+    if (item.itemType) details.push(`Type: ${item.itemType}`);
+    if (item.kitchenCategory) details.push(`Kitchen: ${item.kitchenCategory}`);
+    if (item.serviceDuration) details.push(`Duration: ${item.serviceDuration}`);
+    if (item.staffCommission) details.push(`Commission: ${item.staffCommission}`);
+    if (item.unitType) details.push(`Unit Type: ${item.unitType}`);
+    if (item.supplierName) details.push(`Supplier: ${item.supplierName}`);
+
+    return details.length ? details.join(" | ") : "-";
+  };
 
   const subtotal = cart.reduce(
     (acc, item) => acc + Number(item.price) * Number(item.qty),
@@ -404,6 +553,27 @@ function App() {
         quantity,
         imageUrl,
         barcode,
+        businessCategory: category,
+
+        size,
+        color,
+        brand,
+        mrp,
+        expiryDate,
+        unit,
+        batchNo,
+        medicineType,
+        imeiNumber,
+        serialNumber,
+        warranty,
+        modelNumber,
+        itemType,
+        kitchenCategory,
+        serviceDuration,
+        staffCommission,
+        unitType,
+        supplierName,
+
         shopName: user.shopName,
         shopId: user.shopId,
       }),
@@ -415,6 +585,24 @@ function App() {
     setQuantity("");
     setImageUrl("");
     setBarcode("");
+    setSize("");
+    setColor("");
+    setBrand("");
+    setMrp("");
+    setExpiryDate("");
+    setUnit("");
+    setBatchNo("");
+    setMedicineType("");
+    setImeiNumber("");
+    setSerialNumber("");
+    setWarranty("");
+    setModelNumber("");
+    setItemType("");
+    setKitchenCategory("");
+    setServiceDuration("");
+    setStaffCommission("");
+    setUnitType("");
+    setSupplierName("");
 
     fetchProducts();
     alert("Product Added ✅");
@@ -919,6 +1107,9 @@ Powered By SmartBiz OS
                   value={barcode}
                   onChange={(e) => setBarcode(e.target.value)}
                 />
+
+                {renderCategoryFields()}
+
                 <button
                   onClick={addProduct}
                   className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl text-xl font-bold p-4"
@@ -950,6 +1141,7 @@ Powered By SmartBiz OS
                       <th className="p-4 text-left">Sell</th>
                       <th className="p-4 text-left">Cost</th>
                       <th className="p-4 text-left">{ui.stockName}</th>
+                      <th className="p-4 text-left">Details</th>
                       <th className="p-4 text-left">Status</th>
                       <th className="p-4 text-left">Action</th>
                     </tr>
@@ -984,6 +1176,9 @@ Powered By SmartBiz OS
                           <td className="p-4">Rs {item.price}</td>
                           <td className="p-4">Rs {item.costPrice || 0}</td>
                           <td className="p-4">{item.quantity}</td>
+                          <td className="p-4 text-sm text-slate-300 max-w-xs">
+                            {getProductDetails(item)}
+                          </td>
                           <td className="p-4">
                             {Number(item.quantity) <= 2 ? (
                               <span className="bg-red-500/20 text-red-300 px-3 py-1 rounded-xl">
