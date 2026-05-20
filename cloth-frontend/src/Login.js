@@ -5,6 +5,7 @@ function Login({ setUser }) {
 
   const [shopName, setShopName] = useState("");
   const [ownerName, setOwnerName] = useState("");
+  const [businessCategory, setBusinessCategory] = useState("Clothing");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,10 +19,14 @@ function Login({ setUser }) {
         : "https://clothpro.onrender.com/api/auth/register";
 
       const bodyData = isLogin
-        ? { email, password }
+        ? {
+            email,
+            password,
+          }
         : {
             shopName,
             ownerName,
+            businessCategory,
             email,
             password,
           };
@@ -69,12 +74,12 @@ function Login({ setUser }) {
           </h2>
 
           <p className="text-slate-300 mb-8">
-            Your ClothPro subscription has expired.
-            Please renew your plan to continue using the software.
+            Your ClothPro subscription has expired. Please renew your plan to
+            continue using the software.
           </p>
 
           <a
-            href="https://wa.me/9270725044"
+            href="https://wa.me/919999999999"
             target="_blank"
             rel="noreferrer"
             className="block w-full bg-green-500 hover:bg-green-600 p-4 rounded-2xl text-xl font-bold transition"
@@ -97,14 +102,14 @@ function Login({ setUser }) {
     <div className="min-h-screen bg-slate-950 flex justify-center items-center p-6">
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl w-full max-w-md shadow-2xl">
         <h1 className="text-white text-4xl font-bold mb-8 text-center">
-          {isLogin ? "👕 ClothPro Login" : "🚀 Create Shop"}
+          {isLogin ? "👕 ClothPro Login" : "🚀 Create Business"}
         </h1>
 
         {!isLogin && (
           <>
             <input
               className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none"
-              placeholder="Shop Name"
+              placeholder="Business / Shop Name"
               value={shopName}
               onChange={(e) => setShopName(e.target.value)}
             />
@@ -115,6 +120,25 @@ function Login({ setUser }) {
               value={ownerName}
               onChange={(e) => setOwnerName(e.target.value)}
             />
+
+            <select
+              className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none"
+              value={businessCategory}
+              onChange={(e) => setBusinessCategory(e.target.value)}
+            >
+              <option>Clothing</option>
+              <option>Grocery</option>
+              <option>Medical</option>
+              <option>Restaurant</option>
+              <option>Salon</option>
+              <option>Mobile Shop</option>
+              <option>Electronics</option>
+              <option>Hardware</option>
+              <option>Footwear</option>
+              <option>Cosmetics</option>
+              <option>General Store</option>
+              <option>Other</option>
+            </select>
           </>
         )}
 
@@ -137,16 +161,14 @@ function Login({ setUser }) {
           onClick={submitHandler}
           className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 p-4 rounded-2xl text-white text-xl font-bold hover:scale-105 transition"
         >
-          {isLogin ? "Login" : "Register"}
+          {isLogin ? "Login" : "Register Business"}
         </button>
 
         <p
           onClick={() => setIsLogin(!isLogin)}
           className="text-center text-slate-400 mt-6 cursor-pointer hover:text-white transition"
         >
-          {isLogin
-            ? "Create New Shop"
-            : "Already have account?"}
+          {isLogin ? "Create New Business" : "Already have account?"}
         </p>
       </div>
     </div>

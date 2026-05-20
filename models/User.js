@@ -3,12 +3,19 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   shopName: String,
   ownerName: String,
+
   email: {
     type: String,
     unique: true,
   },
+
   password: String,
   shopId: String,
+
+  businessCategory: {
+    type: String,
+    default: "Clothing",
+  },
 
   licenseToken: {
     type: String,

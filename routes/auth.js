@@ -5,7 +5,13 @@ const User = require("../models/User");
 
 router.post("/register", async (req, res) => {
   try {
-    const { shopName, ownerName, email, password } = req.body;
+    const {
+      shopName,
+      ownerName,
+      businessCategory,
+      email,
+      password,
+    } = req.body;
 
     const existingUser = await User.findOne({ email });
 
@@ -24,6 +30,7 @@ router.post("/register", async (req, res) => {
     const user = new User({
       shopName,
       ownerName,
+      businessCategory: businessCategory || "Clothing",
       email,
       password,
       shopId,
@@ -36,7 +43,7 @@ router.post("/register", async (req, res) => {
       success: true,
       message: "Registration Success",
       user,
-      token: "clothpro-token",
+      token: licenseToken,
     });
   } catch (error) {
     res.json({
@@ -69,10 +76,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    if (
-      user.expiryDate &&
-      new Date(user.expiryDate) < new Date()
-    ) {
+    if (user.expiryDate && new Date(user.expiryDate) < new Date()) {
       return res.json({
         success: false,
         message: "Subscription Expired",

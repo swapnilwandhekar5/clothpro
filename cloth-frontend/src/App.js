@@ -19,6 +19,7 @@ import {
   FaBarcode,
   FaFileExcel,
   FaFilePdf,
+  FaWhatsapp,
 } from "react-icons/fa";
 
 import { motion } from "framer-motion";
@@ -58,42 +59,52 @@ function App() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
   const [analyticsRange, setAnalyticsRange] = useState("daily");
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const savedUser = JSON.parse(localStorage.getItem("clothUser"));
-      if (!savedUser) return;
+  const category = user?.businessCategory || "Clothing";
 
-      const res = await fetch(
-        `https://clothpro.onrender.com/api/product/all/${savedUser.shopId}`
-      );
+  const categoryTitle = {
+    Clothing: "👕 Fashion Business Dashboard",
+    Grocery: "🛒 Grocery Store Dashboard",
+    Medical: "💊 Medical Store Dashboard",
+    Restaurant: "🍽 Restaurant POS Dashboard",
+    Salon: "💇 Salon Management Dashboard",
+    "Mobile Shop": "📱 Mobile Shop Dashboard",
+    Electronics: "🖥 Electronics Store Dashboard",
+    Hardware: "🧰 Hardware Store Dashboard",
+    Footwear: "🥾 Footwear Store Dashboard",
+    Cosmetics: "💄 Cosmetics Store Dashboard",
+    "General Store": "🏪 General Store Dashboard",
+    Other: "🚀 Smart Business Dashboard",
+  };
 
-      const data = await res.json();
-      setProducts(data);
-    };
+  const billingTitle = {
+    Clothing: "👕 Fashion Billing System",
+    Grocery: "🛒 Grocery Billing System",
+    Medical: "💊 Medical Store Billing",
+    Restaurant: "🍽 Restaurant POS System",
+    Salon: "💇 Salon Billing System",
+    "Mobile Shop": "📱 Mobile Shop Billing",
+    Electronics: "🖥 Electronics Billing",
+    Hardware: "🧰 Hardware Billing",
+    Footwear: "🥾 Footwear Billing",
+    Cosmetics: "💄 Cosmetics Billing",
+    "General Store": "🏪 General Store Billing",
+    Other: "💳 Smart Billing System",
+  };
 
-    const fetchSales = async () => {
-      const savedUser = JSON.parse(localStorage.getItem("clothUser"));
-      if (!savedUser) return;
-
-      const res = await fetch(
-        `https://clothpro.onrender.com/api/sales/all/${savedUser.shopId}`
-      );
-
-      const data = await res.json();
-      setSales(data);
-    };
-
-    fetchProducts();
-    fetchSales();
-  }, [user]);
-
-  if (window.location.pathname === "/admin") {
-  return <AdminPanel />;
-}
-
-if (!user) {
-  return <Login setUser={setUser} />;
-}
+  const inventoryTitle = {
+    Clothing: "Fashion Inventory",
+    Grocery: "Grocery Inventory",
+    Medical: "Medicine Inventory",
+    Restaurant: "Menu / Stock Inventory",
+    Salon: "Service / Product Inventory",
+    "Mobile Shop": "Mobile & Accessories Inventory",
+    Electronics: "Electronics Inventory",
+    Hardware: "Hardware Inventory",
+    Footwear: "Footwear Inventory",
+    Cosmetics: "Cosmetics Inventory",
+    "General Store": "General Store Inventory",
+    Other: "Business Inventory",
+  };
 
   const fetchProducts = async () => {
     if (!user) return;
@@ -117,8 +128,37 @@ if (!user) {
     setSales(data);
   };
 
+  useEffect(() => {
+    const savedUser = JSON.parse(localStorage.getItem("clothUser"));
+    if (!savedUser) return;
+
+    const loadData = async () => {
+      const productRes = await fetch(
+        `https://clothpro.onrender.com/api/product/all/${savedUser.shopId}`
+      );
+      const productData = await productRes.json();
+      setProducts(productData);
+
+      const salesRes = await fetch(
+        `https://clothpro.onrender.com/api/sales/all/${savedUser.shopId}`
+      );
+      const salesData = await salesRes.json();
+      setSales(salesData);
+    };
+
+    loadData();
+  }, [user]);
+
+  if (window.location.pathname === "/admin") {
+    return <AdminPanel />;
+  }
+
+  if (!user) {
+    return <Login setUser={setUser} />;
+  }
+
   const addProduct = async () => {
-    if (!name || !price || !costPrice || !quantity || !barcode) {
+    if (!name || !price || !costPrice || !quantity) {
       alert("Fill required fields");
       return;
     }
@@ -184,22 +224,11 @@ if (!user) {
     if (existing) {
       setCart(
         cart.map((item) =>
-          item._id === product._id
-            ? {
-                ...item,
-                qty: item.qty + 1,
-              }
-            : item
+          item._id === product._id ? { ...item, qty: item.qty + 1 } : item
         )
       );
     } else {
-      setCart([
-        ...cart,
-        {
-          ...product,
-          qty: 1,
-        },
-      ]);
+      setCart([...cart, { ...product, qty: 1 }]);
     }
 
     setActiveMenu("billing");
@@ -222,12 +251,7 @@ if (!user) {
   const increaseQty = (id) => {
     setCart(
       cart.map((item) =>
-        item._id === id
-          ? {
-              ...item,
-              qty: item.qty + 1,
-            }
-          : item
+        item._id === id ? { ...item, qty: item.qty + 1 } : item
       )
     );
   };
@@ -236,10 +260,7 @@ if (!user) {
     setCart(
       cart.map((item) =>
         item._id === id
-          ? {
-              ...item,
-              qty: item.qty > 1 ? item.qty - 1 : 1,
-            }
+          ? { ...item, qty: item.qty > 1 ? item.qty - 1 : 1 }
           : item
       )
     );
@@ -371,12 +392,13 @@ if (!user) {
     doc.text(`${user.shopName} Sales Report`, 14, 20);
 
     doc.setFontSize(11);
-    doc.text(`Range: ${analyticsRange}`, 14, 30);
-    doc.text(`Revenue: Rs ${totalRevenue}`, 14, 38);
-    doc.text(`Profit: Rs ${totalProfit}`, 14, 46);
+    doc.text(`Category: ${category}`, 14, 30);
+    doc.text(`Range: ${analyticsRange}`, 14, 38);
+    doc.text(`Revenue: Rs ${totalRevenue}`, 14, 46);
+    doc.text(`Profit: Rs ${totalProfit}`, 14, 54);
 
     autoTable(doc, {
-      startY: 55,
+      startY: 65,
       head: [["Invoice", "Product", "Qty", "Total", "Profit", "Date"]],
       body: filteredSales.map((item) => [
         item.invoiceNumber || "-",
@@ -422,7 +444,7 @@ if (!user) {
 
         <body>
           <h2>${user.shopName}</h2>
-          <p>Fashion Store</p>
+          <p>${category} Store</p>
 
           <div class="line"></div>
 
@@ -448,7 +470,8 @@ if (!user) {
 
           <div class="footer">
             Thank You<br/>
-            Visit Again
+            Visit Again<br/>
+            Powered By ClothPro
           </div>
         </body>
       </html>
@@ -456,6 +479,48 @@ if (!user) {
 
     win.document.close();
     win.print();
+  };
+
+  const sendWhatsAppInvoice = () => {
+    if (cart.length === 0) {
+      alert("Cart empty ❌");
+      return;
+    }
+
+    const message = `
+🧾 *${user.shopName}*
+
+Business: ${category}
+Customer: ${customerName || "Walk-in"}
+Date: ${new Date().toLocaleDateString()}
+
+━━━━━━━━━━━━━━
+
+${cart
+  .map(
+    (item) =>
+      `▪ ${item.name}
+Qty: ${item.qty} × Rs ${item.price}
+Amount: Rs ${item.price * item.qty}`
+  )
+  .join("\n\n")}
+
+━━━━━━━━━━━━━━
+Subtotal : Rs ${subtotal}
+GST (18%) : Rs ${gst.toFixed(2)}
+Discount : Rs ${discountAmount}
+
+💰 *Grand Total : Rs ${finalTotal.toFixed(2)}*
+━━━━━━━━━━━━━━
+
+🙏 Thank You
+Visit Again
+
+Powered By ClothPro
+`;
+
+    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(message);
+    window.open(whatsappUrl, "_blank");
   };
 
   const saveSale = async () => {
@@ -467,8 +532,7 @@ if (!user) {
 
       for (const item of cart) {
         const itemProfit =
-          (Number(item.price) - Number(item.costPrice || 0)) *
-          Number(item.qty);
+          (Number(item.price) - Number(item.costPrice || 0)) * Number(item.qty);
 
         await fetch("https://clothpro.onrender.com/api/sales/add", {
           method: "POST",
@@ -522,9 +586,10 @@ if (!user) {
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col lg:flex-row">
       <div className="w-full lg:w-72 bg-white/5 backdrop-blur-xl border-r border-white/10 p-6">
-        <h1 className="text-3xl font-bold mb-3">👕 ClothPro</h1>
+        <h1 className="text-3xl font-bold mb-3">🚀 SmartBiz OS</h1>
 
-        <p className="text-slate-400 mb-6">{user.shopName}</p>
+        <p className="text-slate-400 mb-1">{user.shopName}</p>
+        <p className="text-cyan-400 mb-6 text-sm">{category}</p>
 
         <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 lg:space-y-0">
           {["dashboard", "inventory", "analytics", "billing"].map((menu) => (
@@ -550,10 +615,14 @@ if (!user) {
 
       <div className="flex-1 p-4 lg:p-10 overflow-auto">
         <h1 className="text-3xl lg:text-5xl font-bold mb-2">
-          Luxury SaaS Dashboard 🚀
+          {categoryTitle[category] || "🚀 Smart Business Dashboard"}
         </h1>
 
-        <p className="text-slate-400 mb-10">Welcome, {user.ownerName}</p>
+        <p className="text-slate-400 mb-2">Welcome, {user.ownerName}</p>
+
+        <p className="text-cyan-400 mb-10 text-lg">
+          Category Based Smart Software For {category}
+        </p>
 
         {activeMenu === "dashboard" && (
           <>
@@ -563,7 +632,7 @@ if (!user) {
                 className="bg-gradient-to-br from-blue-600 to-cyan-500 p-8 rounded-3xl"
               >
                 <FaBox size={40} />
-                <h2 className="text-2xl mt-6">Total Products</h2>
+                <h2 className="text-2xl mt-6">Total Items</h2>
                 <h1 className="text-5xl font-bold mt-4">{totalProducts}</h1>
               </motion.div>
 
@@ -581,7 +650,7 @@ if (!user) {
                 className="bg-gradient-to-br from-emerald-600 to-lime-500 p-8 rounded-3xl"
               >
                 <FaShoppingCart size={40} />
-                <h2 className="text-2xl mt-6">Inventory Value</h2>
+                <h2 className="text-2xl mt-6">Stock Value</h2>
                 <h1 className="text-5xl font-bold mt-4">Rs {totalValue}</h1>
               </motion.div>
             </div>
@@ -612,12 +681,16 @@ if (!user) {
         {activeMenu === "inventory" && (
           <>
             <div className="bg-white/5 rounded-3xl p-6 lg:p-8 mb-10">
-              <h2 className="text-3xl font-bold mb-6">Add Product</h2>
+              <h2 className="text-3xl font-bold mb-6">
+                Add {category} Product / Item
+              </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                 <input
                   className="bg-slate-900 p-4 rounded-2xl"
-                  placeholder="Product Name"
+                  placeholder={
+                    category === "Salon" ? "Service / Product Name" : "Product Name"
+                  }
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -652,7 +725,7 @@ if (!user) {
 
                 <input
                   className="bg-slate-900 p-4 rounded-2xl"
-                  placeholder="Barcode Number"
+                  placeholder="Barcode Number (optional)"
                   value={barcode}
                   onChange={(e) => setBarcode(e.target.value)}
                 />
@@ -669,11 +742,13 @@ if (!user) {
 
             <div className="bg-white/5 rounded-3xl p-6 lg:p-8">
               <div className="flex flex-col lg:flex-row justify-between gap-4 mb-6">
-                <h2 className="text-3xl font-bold">Inventory</h2>
+                <h2 className="text-3xl font-bold">
+                  {inventoryTitle[category] || "Business Inventory"}
+                </h2>
 
                 <input
                   className="bg-slate-900 p-4 rounded-2xl"
-                  placeholder="Search product..."
+                  placeholder="Search product / barcode..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -714,7 +789,7 @@ if (!user) {
                               />
                             ) : (
                               <div className="w-14 h-14 bg-slate-800 rounded-xl flex items-center justify-center">
-                                👕
+                                📦
                               </div>
                             )}
                           </td>
@@ -884,7 +959,7 @@ if (!user) {
         {activeMenu === "billing" && (
           <div className="bg-white/5 rounded-3xl p-6 lg:p-10">
             <h1 className="text-3xl lg:text-5xl font-bold mb-10">
-              💳 Smart Billing System
+              {billingTitle[category] || "💳 Smart Billing System"}
             </h1>
 
             <div className="bg-slate-900 p-5 rounded-3xl mb-8 flex flex-col lg:flex-row gap-4">
@@ -938,7 +1013,7 @@ if (!user) {
                             />
                           ) : (
                             <div className="w-16 h-16 bg-slate-800 rounded-xl flex items-center justify-center">
-                              👕
+                              📦
                             </div>
                           )}
 
@@ -1016,49 +1091,14 @@ if (!user) {
                 >
                   <FaPrint className="inline mr-2" />
                   Save & Print Bill
-                  <button
-  <button
-  onClick={() => {
-    const message = `
-🧾 *${user.shopName}*
+                </button>
 
-━━━━━━━━━━━━━━
-Customer: ${customerName || "Walk-in"}
-Date: ${new Date().toLocaleDateString()}
-━━━━━━━━━━━━━━
-
-${cart
-  .map(
-    (item) =>
-      `▪ ${item.name}
-Qty: ${item.qty} × Rs ${item.price}
-Amount: Rs ${item.price * item.qty}`
-  )
-  .join("\n\n")}
-
-━━━━━━━━━━━━━━
-Subtotal : Rs ${subtotal}
-GST (18%) : Rs ${gst.toFixed(2)}
-Discount : Rs ${discountAmount}
-
-💰 *Grand Total : Rs ${finalTotal.toFixed(2)}*
-━━━━━━━━━━━━━━
-
-🙏 Thank You
-Visit Again
-
-Powered By ClothPro
-`;
-
-    const whatsappUrl =
-      "https://wa.me/?text=" + encodeURIComponent(message);
-
-    window.open(whatsappUrl, "_blank");
-  }}
-  className="w-full mt-4 bg-green-500 hover:bg-green-600 p-4 rounded-2xl text-xl font-bold"
->
-  WhatsApp Invoice
-</button>
+                <button
+                  onClick={sendWhatsAppInvoice}
+                  className="w-full mt-4 bg-green-500 hover:bg-green-600 p-4 rounded-2xl text-xl font-bold"
+                >
+                  <FaWhatsapp className="inline mr-2" />
+                  WhatsApp Invoice
                 </button>
               </div>
             </div>
