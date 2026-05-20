@@ -39,6 +39,249 @@ import {
   CartesianGrid,
 } from "recharts";
 
+const uiByCategory = {
+  Clothing: {
+    appName: "ClothPro Fashion OS",
+    icon: "👕",
+    dashboardTitle: "Fashion Store Dashboard",
+    subtitle: "Size, color, design, billing and stock management",
+    inventoryTitle: "Fashion Inventory",
+    billingTitle: "Fashion Billing System",
+    analyticsTitle: "Fashion Sales Analytics",
+    khataTitle: "Customer Credit Khata",
+    supplierTitle: "Garment Supplier Management",
+    itemName: "Product / Design Name",
+    stockName: "Pieces Stock",
+    barcodeName: "Barcode / SKU",
+    addTitle: "Add Fashion Product",
+    card1: "Total Designs",
+    card2: "Total Pieces",
+    card3: "Inventory Value",
+    lowStock: "Low Stock Fashion Items",
+    scanPlaceholder: "Scan / Enter Product Barcode",
+  },
+  Grocery: {
+    appName: "Smart Grocery OS",
+    icon: "🛒",
+    dashboardTitle: "Grocery Store Dashboard",
+    subtitle: "Kirana, expiry, MRP and daily stock management",
+    inventoryTitle: "Grocery Inventory",
+    billingTitle: "Grocery Billing System",
+    analyticsTitle: "Grocery Sales Analytics",
+    khataTitle: "Customer Udhar Khata",
+    supplierTitle: "Grocery Supplier Management",
+    itemName: "Grocery Item Name",
+    stockName: "Stock Quantity",
+    barcodeName: "Barcode / MRP Code",
+    addTitle: "Add Grocery Item",
+    card1: "Total Grocery Items",
+    card2: "Available Stock",
+    card3: "Stock Value",
+    lowStock: "Low Stock Daily Essentials",
+    scanPlaceholder: "Scan Grocery Barcode",
+  },
+  Medical: {
+    appName: "MediStock OS",
+    icon: "💊",
+    dashboardTitle: "Medical Store Dashboard",
+    subtitle: "Medicine billing, batch, expiry and stock tracking",
+    inventoryTitle: "Medicine Inventory",
+    billingTitle: "Medical Store Billing",
+    analyticsTitle: "Medicine Sales Analytics",
+    khataTitle: "Patient / Customer Khata",
+    supplierTitle: "Pharma Supplier Management",
+    itemName: "Medicine Name",
+    stockName: "Medicine Stock",
+    barcodeName: "Barcode / Batch Code",
+    addTitle: "Add Medicine",
+    card1: "Total Medicines",
+    card2: "Medicine Stock",
+    card3: "Medicine Value",
+    lowStock: "Low Stock Medicines",
+    scanPlaceholder: "Scan Medicine Barcode",
+  },
+  Restaurant: {
+    appName: "Restaurant POS OS",
+    icon: "🍽",
+    dashboardTitle: "Restaurant POS Dashboard",
+    subtitle: "Menu billing, kitchen stock and order analytics",
+    inventoryTitle: "Menu / Stock Inventory",
+    billingTitle: "Restaurant POS Billing",
+    analyticsTitle: "Restaurant Sales Analytics",
+    khataTitle: "Customer Due Management",
+    supplierTitle: "Kitchen Supplier Management",
+    itemName: "Menu Item / Raw Material",
+    stockName: "Kitchen Stock",
+    barcodeName: "Item Code",
+    addTitle: "Add Menu / Stock Item",
+    card1: "Menu Items",
+    card2: "Kitchen Stock",
+    card3: "Stock Value",
+    lowStock: "Low Kitchen Stock",
+    scanPlaceholder: "Enter Item Code",
+  },
+  Salon: {
+    appName: "SalonPro OS",
+    icon: "💇",
+    dashboardTitle: "Salon Management Dashboard",
+    subtitle: "Services, products, billing and customer tracking",
+    inventoryTitle: "Services / Products",
+    billingTitle: "Salon Billing System",
+    analyticsTitle: "Salon Revenue Analytics",
+    khataTitle: "Client Payment Khata",
+    supplierTitle: "Beauty Product Supplier",
+    itemName: "Service / Product Name",
+    stockName: "Available Qty",
+    barcodeName: "Service / Product Code",
+    addTitle: "Add Service / Product",
+    card1: "Total Services",
+    card2: "Products Stock",
+    card3: "Business Value",
+    lowStock: "Low Beauty Product Stock",
+    scanPlaceholder: "Enter Service / Product Code",
+  },
+  "Mobile Shop": {
+    appName: "Mobile Retail OS",
+    icon: "📱",
+    dashboardTitle: "Mobile Shop Dashboard",
+    subtitle: "Mobiles, accessories, IMEI and warranty billing",
+    inventoryTitle: "Mobile & Accessories Inventory",
+    billingTitle: "Mobile Shop Billing",
+    analyticsTitle: "Mobile Sales Analytics",
+    khataTitle: "Customer EMI / Credit Khata",
+    supplierTitle: "Mobile Distributor Management",
+    itemName: "Mobile / Accessory Name",
+    stockName: "Stock Units",
+    barcodeName: "Barcode / IMEI / SKU",
+    addTitle: "Add Mobile / Accessory",
+    card1: "Total Models",
+    card2: "Units In Stock",
+    card3: "Inventory Value",
+    lowStock: "Low Stock Accessories",
+    scanPlaceholder: "Scan IMEI / Barcode",
+  },
+  Electronics: {
+    appName: "ElectroBiz OS",
+    icon: "🖥",
+    dashboardTitle: "Electronics Store Dashboard",
+    subtitle: "Serial number, warranty and billing management",
+    inventoryTitle: "Electronics Inventory",
+    billingTitle: "Electronics Billing",
+    analyticsTitle: "Electronics Sales Analytics",
+    khataTitle: "Customer Credit Ledger",
+    supplierTitle: "Electronics Supplier Management",
+    itemName: "Electronic Product Name",
+    stockName: "Available Units",
+    barcodeName: "Barcode / Serial Code",
+    addTitle: "Add Electronics Product",
+    card1: "Total Products",
+    card2: "Units Stock",
+    card3: "Inventory Value",
+    lowStock: "Low Stock Electronics",
+    scanPlaceholder: "Scan Barcode / Serial Code",
+  },
+  Hardware: {
+    appName: "HardwarePro OS",
+    icon: "🧰",
+    dashboardTitle: "Hardware Store Dashboard",
+    subtitle: "Tools, units, bulk stock and contractor accounts",
+    inventoryTitle: "Hardware Inventory",
+    billingTitle: "Hardware Billing",
+    analyticsTitle: "Hardware Sales Analytics",
+    khataTitle: "Contractor / Customer Khata",
+    supplierTitle: "Hardware Supplier Management",
+    itemName: "Hardware Item Name",
+    stockName: "Units / Bulk Stock",
+    barcodeName: "Item Code / Barcode",
+    addTitle: "Add Hardware Item",
+    card1: "Total Items",
+    card2: "Bulk Stock",
+    card3: "Stock Value",
+    lowStock: "Low Hardware Stock",
+    scanPlaceholder: "Scan Item Code / Barcode",
+  },
+  Footwear: {
+    appName: "FootwearPro OS",
+    icon: "🥾",
+    dashboardTitle: "Footwear Store Dashboard",
+    subtitle: "Size-wise footwear stock and billing management",
+    inventoryTitle: "Footwear Inventory",
+    billingTitle: "Footwear Billing",
+    analyticsTitle: "Footwear Sales Analytics",
+    khataTitle: "Customer Credit Khata",
+    supplierTitle: "Footwear Supplier Management",
+    itemName: "Footwear Name / Model",
+    stockName: "Pairs Stock",
+    barcodeName: "Barcode / Model Code",
+    addTitle: "Add Footwear Product",
+    card1: "Total Models",
+    card2: "Pairs In Stock",
+    card3: "Inventory Value",
+    lowStock: "Low Stock Footwear",
+    scanPlaceholder: "Scan Footwear Barcode",
+  },
+  Cosmetics: {
+    appName: "CosmeticBiz OS",
+    icon: "💄",
+    dashboardTitle: "Cosmetics Store Dashboard",
+    subtitle: "Beauty products, expiry and billing management",
+    inventoryTitle: "Cosmetics Inventory",
+    billingTitle: "Cosmetics Billing",
+    analyticsTitle: "Cosmetics Sales Analytics",
+    khataTitle: "Customer Credit Khata",
+    supplierTitle: "Cosmetics Supplier Management",
+    itemName: "Cosmetic Product Name",
+    stockName: "Product Stock",
+    barcodeName: "Barcode / Product Code",
+    addTitle: "Add Cosmetic Product",
+    card1: "Total Products",
+    card2: "Beauty Stock",
+    card3: "Stock Value",
+    lowStock: "Low Stock Cosmetics",
+    scanPlaceholder: "Scan Cosmetic Barcode",
+  },
+  "General Store": {
+    appName: "General Store OS",
+    icon: "🏪",
+    dashboardTitle: "General Store Dashboard",
+    subtitle: "All item billing, inventory and customer khata",
+    inventoryTitle: "General Store Inventory",
+    billingTitle: "General Store Billing",
+    analyticsTitle: "General Store Analytics",
+    khataTitle: "Customer Udhar Khata",
+    supplierTitle: "Supplier Management",
+    itemName: "Item Name",
+    stockName: "Stock Quantity",
+    barcodeName: "Barcode / Item Code",
+    addTitle: "Add Store Item",
+    card1: "Total Items",
+    card2: "Available Stock",
+    card3: "Stock Value",
+    lowStock: "Low Stock Items",
+    scanPlaceholder: "Scan / Enter Barcode",
+  },
+  Other: {
+    appName: "SmartBiz OS",
+    icon: "🚀",
+    dashboardTitle: "Smart Business Dashboard",
+    subtitle: "Billing, inventory, analytics and business control",
+    inventoryTitle: "Business Inventory",
+    billingTitle: "Smart Billing System",
+    analyticsTitle: "Business Analytics",
+    khataTitle: "Customer Khata",
+    supplierTitle: "Supplier Management",
+    itemName: "Product / Service Name",
+    stockName: "Stock Quantity",
+    barcodeName: "Barcode / Code",
+    addTitle: "Add Product / Service",
+    card1: "Total Items",
+    card2: "Total Stock",
+    card3: "Business Value",
+    lowStock: "Low Stock Alert",
+    scanPlaceholder: "Scan / Enter Code",
+  },
+};
+
 function App() {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("clothUser"))
@@ -64,8 +307,8 @@ function App() {
   const [qrImage, setQrImage] = useState("");
 
   const upiId = "swapnilwandhekar143sp@okaxis";
-
   const category = user?.businessCategory || "Clothing";
+  const ui = uiByCategory[category] || uiByCategory.Other;
 
   const subtotal = cart.reduce(
     (acc, item) => acc + Number(item.price) * Number(item.qty),
@@ -76,69 +319,20 @@ function App() {
   const discountAmount = Number(discount || 0);
   const finalTotal = subtotal + gst - discountAmount;
 
-  const categoryTitle = {
-    Clothing: "👕 Fashion Business Dashboard",
-    Grocery: "🛒 Grocery Store Dashboard",
-    Medical: "💊 Medical Store Dashboard",
-    Restaurant: "🍽 Restaurant POS Dashboard",
-    Salon: "💇 Salon Management Dashboard",
-    "Mobile Shop": "📱 Mobile Shop Dashboard",
-    Electronics: "🖥 Electronics Store Dashboard",
-    Hardware: "🧰 Hardware Store Dashboard",
-    Footwear: "🥾 Footwear Store Dashboard",
-    Cosmetics: "💄 Cosmetics Store Dashboard",
-    "General Store": "🏪 General Store Dashboard",
-    Other: "🚀 Smart Business Dashboard",
-  };
-
-  const billingTitle = {
-    Clothing: "👕 Fashion Billing System",
-    Grocery: "🛒 Grocery Billing System",
-    Medical: "💊 Medical Store Billing",
-    Restaurant: "🍽 Restaurant POS System",
-    Salon: "💇 Salon Billing System",
-    "Mobile Shop": "📱 Mobile Shop Billing",
-    Electronics: "🖥 Electronics Billing",
-    Hardware: "🧰 Hardware Billing",
-    Footwear: "🥾 Footwear Billing",
-    Cosmetics: "💄 Cosmetics Billing",
-    "General Store": "🏪 General Store Billing",
-    Other: "💳 Smart Billing System",
-  };
-
-  const inventoryTitle = {
-    Clothing: "Fashion Inventory",
-    Grocery: "Grocery Inventory",
-    Medical: "Medicine Inventory",
-    Restaurant: "Menu / Stock Inventory",
-    Salon: "Service / Product Inventory",
-    "Mobile Shop": "Mobile & Accessories Inventory",
-    Electronics: "Electronics Inventory",
-    Hardware: "Hardware Inventory",
-    Footwear: "Footwear Inventory",
-    Cosmetics: "Cosmetics Inventory",
-    "General Store": "General Store Inventory",
-    Other: "Business Inventory",
-  };
-
   const fetchProducts = async () => {
     if (!user) return;
-
     const res = await fetch(
       `https://clothpro.onrender.com/api/product/all/${user.shopId}`
     );
-
     const data = await res.json();
     setProducts(data);
   };
 
   const fetchSales = async () => {
     if (!user) return;
-
     const res = await fetch(
       `https://clothpro.onrender.com/api/sales/all/${user.shopId}`
     );
-
     const data = await res.json();
     setSales(data);
   };
@@ -184,7 +378,7 @@ function App() {
     };
 
     generateUPIQR();
-  }, [finalTotal, user, upiId]);
+  }, [finalTotal, user]);
 
   if (window.location.pathname === "/admin") {
     return <AdminPanel />;
@@ -202,9 +396,7 @@ function App() {
 
     await fetch("https://clothpro.onrender.com/api/product/add", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name,
         price,
@@ -232,12 +424,11 @@ function App() {
     await fetch(`https://clothpro.onrender.com/api/product/delete/${id}`, {
       method: "DELETE",
     });
-
     fetchProducts();
   };
 
   const editProduct = async (id) => {
-    const newName = prompt("Enter New Product Name");
+    const newName = prompt(`Enter New ${ui.itemName}`);
     if (!newName) return;
 
     await fetch(
@@ -306,17 +497,14 @@ function App() {
   };
 
   const totalProducts = products.length;
-
   const totalStock = products.reduce(
     (acc, item) => acc + Number(item.quantity),
     0
   );
-
   const totalValue = products.reduce(
     (acc, item) => acc + Number(item.price) * Number(item.quantity),
     0
   );
-
   const lowStockProducts = products.filter(
     (item) => Number(item.quantity) <= 2
   );
@@ -328,46 +516,37 @@ function App() {
     if (analyticsRange === "daily") {
       return saleDate.toDateString() === now.toDateString();
     }
-
     if (analyticsRange === "weekly") {
       return now - saleDate <= 7 * 24 * 60 * 60 * 1000;
     }
-
     if (analyticsRange === "monthly") {
       return (
         saleDate.getMonth() === now.getMonth() &&
         saleDate.getFullYear() === now.getFullYear()
       );
     }
-
     if (analyticsRange === "yearly") {
       return saleDate.getFullYear() === now.getFullYear();
     }
-
     return true;
   };
 
   const filteredSales = sales.filter((sale) => isInRange(sale.date));
-
   const totalRevenue = filteredSales.reduce(
     (acc, item) => acc + Number(item.total),
     0
   );
-
   const totalProfit = filteredSales.reduce(
     (acc, item) => acc + Number(item.profit || 0),
     0
   );
-
   const totalOrders = filteredSales.length;
-
   const totalSoldQty = filteredSales.reduce(
     (acc, item) => acc + Number(item.quantity),
     0
   );
 
   const productMap = {};
-
   filteredSales.forEach((sale) => {
     if (!productMap[sale.productName]) {
       productMap[sale.productName] = {
@@ -377,14 +556,12 @@ function App() {
         profit: 0,
       };
     }
-
     productMap[sale.productName].revenue += Number(sale.total);
     productMap[sale.productName].quantity += Number(sale.quantity);
     productMap[sale.productName].profit += Number(sale.profit || 0);
   });
 
   const productChartData = Object.values(productMap);
-
   const revenueChartData = filteredSales.map((sale) => ({
     date: new Date(sale.date).toLocaleDateString(),
     revenue: Number(sale.total),
@@ -400,22 +577,20 @@ function App() {
       Total: item.total,
       Profit: item.profit || 0,
       Shop: item.shopName,
+      Category: category,
       Date: new Date(item.date).toLocaleDateString(),
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
-
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sales Report");
-    XLSX.writeFile(workbook, "sales-report.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, `${category} Report`);
+    XLSX.writeFile(workbook, `${category}-sales-report.xlsx`);
   };
 
   const exportPDF = () => {
     const doc = new jsPDF();
-
     doc.setFontSize(18);
-    doc.text(`${user.shopName} Sales Report`, 14, 20);
-
+    doc.text(`${user.shopName} ${ui.analyticsTitle}`, 14, 20);
     doc.setFontSize(11);
     doc.text(`Category: ${category}`, 14, 30);
     doc.text(`Range: ${analyticsRange}`, 14, 38);
@@ -424,7 +599,7 @@ function App() {
 
     autoTable(doc, {
       startY: 65,
-      head: [["Invoice", "Product", "Qty", "Total", "Profit", "Date"]],
+      head: [["Invoice", "Item", "Qty", "Total", "Profit", "Date"]],
       body: filteredSales.map((item) => [
         item.invoiceNumber || "-",
         item.productName,
@@ -435,7 +610,7 @@ function App() {
       ]),
     });
 
-    doc.save("sales-report.pdf");
+    doc.save(`${category}-sales-report.pdf`);
   };
 
   const printInvoice = () => {
@@ -451,11 +626,10 @@ function App() {
       .join("");
 
     const win = window.open("", "", "width=350,height=700");
-
     win.document.write(`
       <html>
         <head>
-          <title>Thermal Invoice</title>
+          <title>${ui.billingTitle}</title>
           <style>
             body{font-family: monospace;width:280px;padding:10px;}
             h2,p{text-align:center;margin:4px 0;}
@@ -466,22 +640,15 @@ function App() {
             .footer{text-align:center;margin-top:20px;font-size:12px;}
           </style>
         </head>
-
         <body>
           <h2>${user.shopName}</h2>
-          <p>${category} Store</p>
-
+          <p>${ui.billingTitle}</p>
           <div class="line"></div>
-
           <p>Date: ${new Date().toLocaleDateString()}</p>
           <p>Customer: ${customerName || "Walk-in"}</p>
-
           <div class="line"></div>
-
           <table>${invoiceItems}</table>
-
           <div class="line"></div>
-
           <table>
             <tr><td>Subtotal</td><td align="right">Rs ${subtotal}</td></tr>
             <tr><td>GST</td><td align="right">Rs ${gst.toFixed(2)}</td></tr>
@@ -490,9 +657,7 @@ function App() {
               2
             )}</td></tr>
           </table>
-
           <div class="line"></div>
-
           ${
             qrImage
               ? `<div style="text-align:center;margin:10px 0;">
@@ -503,16 +668,14 @@ function App() {
                 <div class="line"></div>`
               : ""
           }
-
           <div class="footer">
             Thank You<br/>
             Visit Again<br/>
-            Powered By ClothPro
+            Powered By SmartBiz OS
           </div>
         </body>
       </html>
     `);
-
     win.document.close();
     win.print();
   };
@@ -526,7 +689,7 @@ function App() {
     const message = `
 🧾 *${user.shopName}*
 
-Business: ${category}
+${ui.billingTitle}
 Customer: ${customerName || "Walk-in"}
 Date: ${new Date().toLocaleDateString()}
 
@@ -535,9 +698,9 @@ Date: ${new Date().toLocaleDateString()}
 ${cart
   .map(
     (item) =>
-      `▪ ${item.name}
-Qty: ${item.qty} × Rs ${item.price}
-Amount: Rs ${item.price * item.qty}`
+      `▪ ${item.name}\nQty: ${item.qty} × Rs ${item.price}\nAmount: Rs ${
+        item.price * item.qty
+      }`
   )
   .join("\n\n")}
 
@@ -553,7 +716,7 @@ UPI ID: ${upiId}
 🙏 Thank You
 Visit Again
 
-Powered By ClothPro
+Powered By SmartBiz OS
 `;
 
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(message);
@@ -573,9 +736,7 @@ Powered By ClothPro
 
         await fetch("https://clothpro.onrender.com/api/sales/add", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             productName: item.name,
             price: item.price,
@@ -592,21 +753,16 @@ Powered By ClothPro
           `https://clothpro.onrender.com/api/product/update/${item._id}?quantity=${
             Number(item.quantity) - Number(item.qty)
           }`,
-          {
-            method: "PUT",
-          }
+          { method: "PUT" }
         );
       }
 
       printInvoice();
-
       setCart([]);
       setCustomerName("");
       setDiscount(0);
-
       fetchProducts();
       fetchSales();
-
       alert("Sale Saved ✅");
     } catch (error) {
       console.log(error);
@@ -620,33 +776,38 @@ Powered By ClothPro
     setUser(null);
   };
 
+  const menuLabels = {
+    dashboard: "Dashboard",
+    inventory: ui.inventoryTitle,
+    analytics: ui.analyticsTitle,
+    billing: ui.billingTitle,
+    khata: ui.khataTitle,
+    supplier: ui.supplierTitle,
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col lg:flex-row">
-      <div className="w-full lg:w-72 bg-white/5 backdrop-blur-xl border-r border-white/10 p-6">
-        <h1 className="text-3xl font-bold mb-3">🚀 SmartBiz OS</h1>
-
+      <div className="w-full lg:w-80 bg-white/5 backdrop-blur-xl border-r border-white/10 p-6">
+        <h1 className="text-3xl font-bold mb-3">
+          {ui.icon} {ui.appName}
+        </h1>
         <p className="text-slate-400 mb-1">{user.shopName}</p>
         <p className="text-cyan-400 mb-6 text-sm">{category}</p>
 
         <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 lg:space-y-0">
-          {[
-            "dashboard",
-            "inventory",
-            "analytics",
-            "billing",
-            "khata",
-            "supplier",
-          ].map((menu) => (
-            <div
-              key={menu}
-              onClick={() => setActiveMenu(menu)}
-              className={`p-4 rounded-2xl cursor-pointer transition capitalize text-center lg:text-left ${
-                activeMenu === menu ? "bg-blue-500/20" : "hover:bg-white/10"
-              }`}
-            >
-              {menu}
-            </div>
-          ))}
+          {["dashboard", "inventory", "analytics", "billing", "khata", "supplier"].map(
+            (menu) => (
+              <div
+                key={menu}
+                onClick={() => setActiveMenu(menu)}
+                className={`p-4 rounded-2xl cursor-pointer transition text-center lg:text-left ${
+                  activeMenu === menu ? "bg-blue-500/20" : "hover:bg-white/10"
+                }`}
+              >
+                {menuLabels[menu]}
+              </div>
+            )
+          )}
 
           <button
             onClick={logout}
@@ -659,14 +820,10 @@ Powered By ClothPro
 
       <div className="flex-1 p-4 lg:p-10 overflow-auto">
         <h1 className="text-3xl lg:text-5xl font-bold mb-2">
-          {categoryTitle[category] || "🚀 Smart Business Dashboard"}
+          {ui.icon} {ui.dashboardTitle}
         </h1>
-
         <p className="text-slate-400 mb-2">Welcome, {user.ownerName}</p>
-
-        <p className="text-cyan-400 mb-10 text-lg">
-          Category Based Smart Software For {category}
-        </p>
+        <p className="text-cyan-400 mb-10 text-lg">{ui.subtitle}</p>
 
         {activeMenu === "dashboard" && (
           <>
@@ -676,7 +833,7 @@ Powered By ClothPro
                 className="bg-gradient-to-br from-blue-600 to-cyan-500 p-8 rounded-3xl"
               >
                 <FaBox size={40} />
-                <h2 className="text-2xl mt-6">Total Items</h2>
+                <h2 className="text-2xl mt-6">{ui.card1}</h2>
                 <h1 className="text-5xl font-bold mt-4">{totalProducts}</h1>
               </motion.div>
 
@@ -685,7 +842,7 @@ Powered By ClothPro
                 className="bg-gradient-to-br from-purple-600 to-pink-500 p-8 rounded-3xl"
               >
                 <FaChartBar size={40} />
-                <h2 className="text-2xl mt-6">Total Stock</h2>
+                <h2 className="text-2xl mt-6">{ui.card2}</h2>
                 <h1 className="text-5xl font-bold mt-4">{totalStock}</h1>
               </motion.div>
 
@@ -694,15 +851,14 @@ Powered By ClothPro
                 className="bg-gradient-to-br from-emerald-600 to-lime-500 p-8 rounded-3xl"
               >
                 <FaShoppingCart size={40} />
-                <h2 className="text-2xl mt-6">Stock Value</h2>
+                <h2 className="text-2xl mt-6">{ui.card3}</h2>
                 <h1 className="text-5xl font-bold mt-4">Rs {totalValue}</h1>
               </motion.div>
             </div>
 
             {lowStockProducts.length > 0 && (
               <div className="mt-10 bg-red-500/20 border border-red-500 p-6 rounded-3xl">
-                <h2 className="text-3xl font-bold mb-4">⚠ Low Stock Alert</h2>
-
+                <h2 className="text-3xl font-bold mb-4">⚠ {ui.lowStock}</h2>
                 <div className="space-y-3">
                   {lowStockProducts.map((item) => (
                     <div
@@ -710,7 +866,6 @@ Powered By ClothPro
                       className="flex justify-between bg-black/20 p-4 rounded-2xl"
                     >
                       <span>{item.name}</span>
-
                       <span className="font-bold text-red-300">
                         Only {item.quantity} left
                       </span>
@@ -725,57 +880,45 @@ Powered By ClothPro
         {activeMenu === "inventory" && (
           <>
             <div className="bg-white/5 rounded-3xl p-6 lg:p-8 mb-10">
-              <h2 className="text-3xl font-bold mb-6">
-                Add {category} Product / Item
-              </h2>
+              <h2 className="text-3xl font-bold mb-6">{ui.addTitle}</h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                 <input
                   className="bg-slate-900 p-4 rounded-2xl"
-                  placeholder={
-                    category === "Salon"
-                      ? "Service / Product Name"
-                      : "Product Name"
-                  }
+                  placeholder={ui.itemName}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
-
                 <input
                   className="bg-slate-900 p-4 rounded-2xl"
                   placeholder="Selling Price"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                 />
-
                 <input
                   className="bg-slate-900 p-4 rounded-2xl"
                   placeholder="Cost Price"
                   value={costPrice}
                   onChange={(e) => setCostPrice(e.target.value)}
                 />
-
                 <input
                   className="bg-slate-900 p-4 rounded-2xl"
-                  placeholder="Quantity"
+                  placeholder={ui.stockName}
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                 />
-
                 <input
                   className="bg-slate-900 p-4 rounded-2xl"
                   placeholder="Image URL"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
                 />
-
                 <input
                   className="bg-slate-900 p-4 rounded-2xl"
-                  placeholder="Barcode Number (optional)"
+                  placeholder={`${ui.barcodeName} (optional)`}
                   value={barcode}
                   onChange={(e) => setBarcode(e.target.value)}
                 />
-
                 <button
                   onClick={addProduct}
                   className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl text-xl font-bold p-4"
@@ -788,13 +931,10 @@ Powered By ClothPro
 
             <div className="bg-white/5 rounded-3xl p-6 lg:p-8">
               <div className="flex flex-col lg:flex-row justify-between gap-4 mb-6">
-                <h2 className="text-3xl font-bold">
-                  {inventoryTitle[category] || "Business Inventory"}
-                </h2>
-
+                <h2 className="text-3xl font-bold">{ui.inventoryTitle}</h2>
                 <input
                   className="bg-slate-900 p-4 rounded-2xl"
-                  placeholder="Search product / barcode..."
+                  placeholder={`Search ${ui.itemName} / ${ui.barcodeName}...`}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -805,11 +945,11 @@ Powered By ClothPro
                   <thead>
                     <tr className="border-b border-white/10">
                       <th className="p-4 text-left">Image</th>
-                      <th className="p-4 text-left">Product</th>
-                      <th className="p-4 text-left">Barcode</th>
+                      <th className="p-4 text-left">{ui.itemName}</th>
+                      <th className="p-4 text-left">{ui.barcodeName}</th>
                       <th className="p-4 text-left">Sell</th>
                       <th className="p-4 text-left">Cost</th>
-                      <th className="p-4 text-left">Stock</th>
+                      <th className="p-4 text-left">{ui.stockName}</th>
                       <th className="p-4 text-left">Status</th>
                       <th className="p-4 text-left">Action</th>
                     </tr>
@@ -835,17 +975,15 @@ Powered By ClothPro
                               />
                             ) : (
                               <div className="w-14 h-14 bg-slate-800 rounded-xl flex items-center justify-center">
-                                📦
+                                {ui.icon}
                               </div>
                             )}
                           </td>
-
                           <td className="p-4">{item.name}</td>
                           <td className="p-4">{item.barcode || "-"}</td>
                           <td className="p-4">Rs {item.price}</td>
                           <td className="p-4">Rs {item.costPrice || 0}</td>
                           <td className="p-4">{item.quantity}</td>
-
                           <td className="p-4">
                             {Number(item.quantity) <= 2 ? (
                               <span className="bg-red-500/20 text-red-300 px-3 py-1 rounded-xl">
@@ -857,7 +995,6 @@ Powered By ClothPro
                               </span>
                             )}
                           </td>
-
                           <td className="p-4 flex gap-3">
                             <button
                               onClick={() => editProduct(item._id)}
@@ -865,14 +1002,12 @@ Powered By ClothPro
                             >
                               <FaEdit />
                             </button>
-
                             <button
                               onClick={() => deleteProduct(item._id)}
                               className="bg-red-500 p-3 rounded-xl"
                             >
                               <FaTrash />
                             </button>
-
                             <button
                               onClick={() => addToCart(item)}
                               className="bg-green-500 p-3 rounded-xl"
@@ -891,6 +1026,7 @@ Powered By ClothPro
 
         {activeMenu === "analytics" && (
           <>
+            <h2 className="text-4xl font-bold mb-6">{ui.analyticsTitle}</h2>
             <div className="flex flex-wrap gap-4 mb-8">
               {["daily", "weekly", "monthly", "yearly"].map((range) => (
                 <button
@@ -905,7 +1041,6 @@ Powered By ClothPro
                   {range}
                 </button>
               ))}
-
               <button
                 onClick={exportExcel}
                 className="px-6 py-3 rounded-2xl bg-green-600 hover:bg-green-700"
@@ -913,7 +1048,6 @@ Powered By ClothPro
                 <FaFileExcel className="inline mr-2" />
                 Excel
               </button>
-
               <button
                 onClick={exportPDF}
                 className="px-6 py-3 rounded-2xl bg-red-600 hover:bg-red-700"
@@ -929,19 +1063,16 @@ Powered By ClothPro
                 <h2 className="text-2xl mt-6">Revenue</h2>
                 <h1 className="text-4xl font-bold mt-4">Rs {totalRevenue}</h1>
               </div>
-
               <div className="bg-gradient-to-br from-blue-600 to-cyan-500 p-8 rounded-3xl">
                 <FaMoneyBillWave size={40} />
                 <h2 className="text-2xl mt-6">Profit</h2>
                 <h1 className="text-4xl font-bold mt-4">Rs {totalProfit}</h1>
               </div>
-
               <div className="bg-gradient-to-br from-orange-600 to-yellow-400 p-8 rounded-3xl">
                 <FaReceipt size={40} />
                 <h2 className="text-2xl mt-6">Orders</h2>
                 <h1 className="text-4xl font-bold mt-4">{totalOrders}</h1>
               </div>
-
               <div className="bg-gradient-to-br from-purple-600 to-pink-500 p-8 rounded-3xl">
                 <FaChartBar size={40} />
                 <h2 className="text-2xl mt-6">Sold Qty</h2>
@@ -951,10 +1082,7 @@ Powered By ClothPro
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
               <div className="bg-white/5 rounded-3xl p-6 lg:p-8">
-                <h2 className="text-3xl font-bold mb-6">
-                  Revenue & Profit Chart
-                </h2>
-
+                <h2 className="text-3xl font-bold mb-6">Revenue & Profit Chart</h2>
                 <div style={{ height: 320 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={revenueChartData}>
@@ -980,10 +1108,7 @@ Powered By ClothPro
               </div>
 
               <div className="bg-white/5 rounded-3xl p-6 lg:p-8">
-                <h2 className="text-3xl font-bold mb-6">
-                  Product Performance
-                </h2>
-
+                <h2 className="text-3xl font-bold mb-6">{ui.itemName} Performance</h2>
                 <div style={{ height: 320 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={productChartData}>
@@ -1005,13 +1130,13 @@ Powered By ClothPro
         {activeMenu === "billing" && (
           <div className="bg-white/5 rounded-3xl p-6 lg:p-10">
             <h1 className="text-3xl lg:text-5xl font-bold mb-10">
-              {billingTitle[category] || "💳 Smart Billing System"}
+              {ui.billingTitle}
             </h1>
 
             <div className="bg-slate-900 p-5 rounded-3xl mb-8 flex flex-col lg:flex-row gap-4">
               <input
                 className="flex-1 bg-slate-800 p-4 rounded-2xl"
-                placeholder="Scan / Enter Barcode"
+                placeholder={ui.scanPlaceholder}
                 value={barcodeSearch}
                 onChange={(e) => setBarcodeSearch(e.target.value)}
                 onKeyDown={(e) => {
@@ -1020,7 +1145,6 @@ Powered By ClothPro
                   }
                 }}
               />
-
               <button
                 onClick={addByBarcode}
                 className="bg-green-500 px-6 py-4 rounded-2xl font-bold"
@@ -1038,7 +1162,6 @@ Powered By ClothPro
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                 />
-
                 <input
                   className="w-full bg-slate-900 p-4 rounded-2xl mb-6"
                   placeholder="Discount Amount"
@@ -1059,15 +1182,14 @@ Powered By ClothPro
                             />
                           ) : (
                             <div className="w-16 h-16 bg-slate-800 rounded-xl flex items-center justify-center">
-                              📦
+                              {ui.icon}
                             </div>
                           )}
-
                           <div>
                             <h2 className="font-bold text-xl">{item.name}</h2>
                             <p>Rs {item.price}</p>
                             <p className="text-slate-400 text-sm">
-                              Barcode: {item.barcode || "-"}
+                              {ui.barcodeName}: {item.barcode || "-"}
                             </p>
                           </div>
                         </div>
@@ -1079,16 +1201,13 @@ Powered By ClothPro
                           >
                             -
                           </button>
-
                           <span className="text-2xl font-bold">{item.qty}</span>
-
                           <button
                             onClick={() => increaseQty(item._id)}
                             className="bg-green-500 w-10 h-10 rounded-xl text-xl"
                           >
                             +
                           </button>
-
                           <button
                             onClick={() => removeFromCart(item._id)}
                             className="bg-red-700 px-4 py-2 rounded-xl"
@@ -1097,7 +1216,6 @@ Powered By ClothPro
                           </button>
                         </div>
                       </div>
-
                       <div className="mt-4 text-right text-xl font-bold">
                         Total: Rs {item.price * item.qty}
                       </div>
@@ -1107,7 +1225,7 @@ Powered By ClothPro
               </div>
 
               <div className="bg-slate-900 p-6 lg:p-8 rounded-3xl">
-                <h2 className="text-3xl font-bold mb-8">Invoice</h2>
+                <h2 className="text-3xl font-bold mb-8">{ui.billingTitle} Invoice</h2>
 
                 {qrImage && (
                   <div className="flex flex-col items-center mb-6 bg-white/5 p-5 rounded-3xl border border-green-500/30">
@@ -1116,11 +1234,9 @@ Powered By ClothPro
                       alt="UPI QR"
                       className="w-52 h-52 bg-white p-3 rounded-2xl"
                     />
-
                     <p className="mt-4 text-green-400 font-bold text-lg">
                       Scan & Pay ₹ {finalTotal.toFixed(2)}
                     </p>
-
                     <p className="text-sm text-slate-400 mt-1">{upiId}</p>
                   </div>
                 )}
@@ -1130,17 +1246,14 @@ Powered By ClothPro
                     <span>Subtotal</span>
                     <span>Rs {subtotal}</span>
                   </div>
-
                   <div className="flex justify-between">
                     <span>GST (18%)</span>
                     <span>Rs {gst.toFixed(2)}</span>
                   </div>
-
                   <div className="flex justify-between">
                     <span>Discount</span>
                     <span>- Rs {discountAmount}</span>
                   </div>
-
                   <div className="flex justify-between text-3xl font-bold border-t border-white/10 pt-4">
                     <span>Total</span>
                     <span>Rs {finalTotal.toFixed(2)}</span>
@@ -1168,7 +1281,6 @@ Powered By ClothPro
         )}
 
         {activeMenu === "khata" && <CustomerKhata user={user} />}
-
         {activeMenu === "supplier" && <SupplierManagement user={user} />}
       </div>
     </div>
