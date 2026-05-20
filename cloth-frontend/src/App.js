@@ -327,7 +327,7 @@ function App() {
   const [analyticsRange, setAnalyticsRange] = useState("daily");
   const [qrImage, setQrImage] = useState("");
 
-  const upiId = "swapnilwandhekar143sp@okaxis";
+  const upiId = user?.upiId || "";
   const category = user?.businessCategory || "Clothing";
   const ui = uiByCategory[category] || uiByCategory.Other;
 
@@ -512,7 +512,7 @@ function App() {
   useEffect(() => {
     const generateUPIQR = async () => {
       try {
-        if (!user || finalTotal <= 0) {
+        if (!user || !upiId || finalTotal <= 0) {
           setQrImage("");
           return;
         }
@@ -1015,6 +1015,36 @@ Powered By SmartBiz OS
     }
   };
 
+  const updateUpiId = async () => {
+    const newUpiId = prompt("Enter your UPI ID", user?.upiId || "");
+
+    if (!newUpiId) return;
+
+    try {
+      const res = await fetch(
+        `https://clothpro.onrender.com/api/auth/update-upi/${user._id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ upiId: newUpiId }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem("clothUser", JSON.stringify(data.user));
+        setUser(data.user);
+        alert("UPI ID Updated ✅");
+      } else {
+        alert(data.message || "UPI update failed ❌");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("UPI update error ❌");
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("clothUser");
     localStorage.removeItem("clothToken");
@@ -1028,6 +1058,7 @@ Powered By SmartBiz OS
     billing: ui.billingTitle,
     khata: ui.khataTitle,
     supplier: ui.supplierTitle,
+    settings: "Payment Settings",
   };
 
   return (
@@ -1040,7 +1071,7 @@ Powered By SmartBiz OS
         <p className="text-cyan-400 mb-6 text-sm">{category}</p>
 
         <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 lg:space-y-0">
-          {["dashboard", "inventory", "analytics", "billing", "khata", "supplier"].map(
+          {["dashboard", "inventory", "analytics", "billing", "khata", "supplier", "settings"].map(
             (menu) => (
               <div
                 key={menu}
@@ -1517,6 +1548,14 @@ Powered By SmartBiz OS
                   </div>
                 )
 
+                {!upiId && finalTotal > 0 && (
+                  <div className="mb-6 bg-yellow-500/10 border border-yellow-500/30 p-5 rounded-3xl text-center">
+                    <p className="text-yellow-300 font-bold text-lg">
+                      Add your UPI ID in Payment Settings to show QR code.
+                    </p>
+                  </div>
+                )}
+
                 {qrImage && (
                   <div className="flex flex-col items-center mb-6 bg-white/5 p-5 rounded-3xl border border-green-500/30">
                     <img
@@ -1581,6 +1620,30 @@ Powered By SmartBiz OS
 
         {activeMenu === "khata" && <CustomerKhata user={user} />}
         {activeMenu === "supplier" && <SupplierManagement user={user} />}
+
+        {activeMenu === "settings" && (
+          <div className="bg-white/5 rounded-3xl p-6 lg:p-8">
+            <h2 className="text-4xl font-bold mb-6">💳 Payment Settings</h2>
+
+            <div className="bg-slate-900 p-6 rounded-3xl max-w-xl">
+              <p className="text-slate-400 mb-2">Current UPI ID</p>
+              <h3 className="text-2xl font-bold mb-6">
+                {user?.upiId || "No UPI ID added"}
+              </h3>
+
+              <button
+                onClick={updateUpiId}
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-4 rounded-2xl text-xl font-bold"
+              >
+                Update UPI ID
+              </button>
+
+              <p className="text-slate-400 mt-6">
+                This UPI ID will be used automatically in billing QR code and printed invoice.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

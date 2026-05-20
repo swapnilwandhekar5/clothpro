@@ -6,6 +6,7 @@ function Login({ setUser }) {
   const [shopName, setShopName] = useState("");
   const [ownerName, setOwnerName] = useState("");
   const [businessCategory, setBusinessCategory] = useState("Clothing");
+  const [upiId, setUpiId] = useState("");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +28,7 @@ function Login({ setUser }) {
             shopName,
             ownerName,
             businessCategory,
+            upiId,
             email,
             password,
           };
@@ -74,8 +76,8 @@ function Login({ setUser }) {
           </h2>
 
           <p className="text-slate-300 mb-8">
-            Your ClothPro subscription has expired. Please renew your plan to
-            continue using the software.
+            Your subscription has expired. Please renew your plan to continue
+            using the software.
           </p>
 
           <a
@@ -102,7 +104,7 @@ function Login({ setUser }) {
     <div className="min-h-screen bg-slate-950 flex justify-center items-center p-6">
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl w-full max-w-md shadow-2xl">
         <h1 className="text-white text-4xl font-bold mb-8 text-center">
-          {isLogin ? "👕 ClothPro Login" : "🚀 Create Business"}
+          {isLogin ? "🚀 SmartBiz Login" : "🚀 Create Business"}
         </h1>
 
         {!isLogin && (
@@ -139,6 +141,13 @@ function Login({ setUser }) {
               <option>General Store</option>
               <option>Other</option>
             </select>
+
+            <input
+              className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none"
+              placeholder="UPI ID (example: name@upi)"
+              value={upiId}
+              onChange={(e) => setUpiId(e.target.value)}
+            />
           </>
         )}
 
