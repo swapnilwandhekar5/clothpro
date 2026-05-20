@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import QRCode from "qrcode";
 import Login from "./Login";
 import AdminPanel from "./AdminPanel";
 import CustomerKhata from "./CustomerKhata";
@@ -60,8 +61,20 @@ function App() {
   const [discount, setDiscount] = useState(0);
   const [activeMenu, setActiveMenu] = useState("dashboard");
   const [analyticsRange, setAnalyticsRange] = useState("daily");
+  const [qrImage, setQrImage] = useState("");
+
+  const upiId = "swapnilwandhekar143sp@okaxis";
 
   const category = user?.businessCategory || "Clothing";
+
+  const subtotal = cart.reduce(
+    (acc, item) => acc + Number(item.price) * Number(item.qty),
+    0
+  );
+
+  const gst = subtotal * 0.18;
+  const discountAmount = Number(discount || 0);
+  const finalTotal = subtotal + gst - discountAmount;
 
   const categoryTitle = {
     Clothing: "👕 Fashion Business Dashboard",
@@ -150,6 +163,28 @@ function App() {
 
     loadData();
   }, [user]);
+
+  useEffect(() => {
+    const generateUPIQR = async () => {
+      try {
+        if (!user || finalTotal <= 0) {
+          setQrImage("");
+          return;
+        }
+
+        const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(
+          user.shopName
+        )}&am=${finalTotal.toFixed(2)}&cu=INR`;
+
+        const qr = await QRCode.toDataURL(upiUrl);
+        setQrImage(qr);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    generateUPIQR();
+  }, [finalTotal, user, upiId]);
 
   if (window.location.pathname === "/admin") {
     return <AdminPanel />;
@@ -269,15 +304,6 @@ function App() {
   const removeFromCart = (id) => {
     setCart(cart.filter((item) => item._id !== id));
   };
-
-  const subtotal = cart.reduce(
-    (acc, item) => acc + Number(item.price) * Number(item.qty),
-    0
-  );
-
-  const gst = subtotal * 0.18;
-  const discountAmount = Number(discount || 0);
-  const finalTotal = subtotal + gst - discountAmount;
 
   const totalProducts = products.length;
 
@@ -467,6 +493,17 @@ function App() {
 
           <div class="line"></div>
 
+          ${
+            qrImage
+              ? `<div style="text-align:center;margin:10px 0;">
+                  <p><b>Scan & Pay</b></p>
+                  <img src="${qrImage}" style="width:150px;height:150px;" />
+                  <p>${upiId}</p>
+                </div>
+                <div class="line"></div>`
+              : ""
+          }
+
           <div class="footer">
             Thank You<br/>
             Visit Again<br/>
@@ -510,6 +547,7 @@ GST (18%) : Rs ${gst.toFixed(2)}
 Discount : Rs ${discountAmount}
 
 💰 *Grand Total : Rs ${finalTotal.toFixed(2)}*
+UPI ID: ${upiId}
 ━━━━━━━━━━━━━━
 
 🙏 Thank You
@@ -1070,6 +1108,22 @@ Powered By ClothPro
 
               <div className="bg-slate-900 p-6 lg:p-8 rounded-3xl">
                 <h2 className="text-3xl font-bold mb-8">Invoice</h2>
+
+                {qrImage && (
+                  <div className="flex flex-col items-center mb-6 bg-white/5 p-5 rounded-3xl border border-green-500/30">
+                    <img
+                      src={qrImage}
+                      alt="UPI QR"
+                      className="w-52 h-52 bg-white p-3 rounded-2xl"
+                    />
+
+                    <p className="mt-4 text-green-400 font-bold text-lg">
+                      Scan & Pay ₹ {finalTotal.toFixed(2)}
+                    </p>
+
+                    <p className="text-sm text-slate-400 mt-1">{upiId}</p>
+                  </div>
+                )}
 
                 <div className="space-y-4 text-xl">
                   <div className="flex justify-between">
