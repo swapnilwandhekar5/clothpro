@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Login from "./Login";
 import AdminPanel from "./AdminPanel";
+import CustomerKhata from "./CustomerKhata";
 
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
@@ -205,9 +206,7 @@ function App() {
 
     await fetch(
       `https://clothpro.onrender.com/api/product/update/${id}?name=${newName}`,
-      {
-        method: "PUT",
-      }
+      { method: "PUT" }
     );
 
     fetchProducts();
@@ -381,7 +380,6 @@ function App() {
     const workbook = XLSX.utils.book_new();
 
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sales Report");
-
     XLSX.writeFile(workbook, "sales-report.xlsx");
   };
 
@@ -592,17 +590,19 @@ Powered By ClothPro
         <p className="text-cyan-400 mb-6 text-sm">{category}</p>
 
         <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 lg:space-y-0">
-          {["dashboard", "inventory", "analytics", "billing"].map((menu) => (
-            <div
-              key={menu}
-              onClick={() => setActiveMenu(menu)}
-              className={`p-4 rounded-2xl cursor-pointer transition capitalize text-center lg:text-left ${
-                activeMenu === menu ? "bg-blue-500/20" : "hover:bg-white/10"
-              }`}
-            >
-              {menu}
-            </div>
-          ))}
+          {["dashboard", "inventory", "analytics", "billing", "khata"].map(
+            (menu) => (
+              <div
+                key={menu}
+                onClick={() => setActiveMenu(menu)}
+                className={`p-4 rounded-2xl cursor-pointer transition capitalize text-center lg:text-left ${
+                  activeMenu === menu ? "bg-blue-500/20" : "hover:bg-white/10"
+                }`}
+              >
+                {menu}
+              </div>
+            )
+          )}
 
           <button
             onClick={logout}
@@ -689,7 +689,9 @@ Powered By ClothPro
                 <input
                   className="bg-slate-900 p-4 rounded-2xl"
                   placeholder={
-                    category === "Salon" ? "Service / Product Name" : "Product Name"
+                    category === "Salon"
+                      ? "Service / Product Name"
+                      : "Product Name"
                   }
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -1104,6 +1106,8 @@ Powered By ClothPro
             </div>
           </div>
         )}
+
+        {activeMenu === "khata" && <CustomerKhata user={user} />}
       </div>
     </div>
   );
