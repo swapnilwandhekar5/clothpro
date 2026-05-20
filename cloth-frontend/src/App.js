@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Login from "./Login";
 import AdminPanel from "./AdminPanel";
 import CustomerKhata from "./CustomerKhata";
+import SupplierManagement from "./SupplierManagement";
 
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
@@ -590,19 +591,24 @@ Powered By ClothPro
         <p className="text-cyan-400 mb-6 text-sm">{category}</p>
 
         <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 lg:space-y-0">
-          {["dashboard", "inventory", "analytics", "billing", "khata"].map(
-            (menu) => (
-              <div
-                key={menu}
-                onClick={() => setActiveMenu(menu)}
-                className={`p-4 rounded-2xl cursor-pointer transition capitalize text-center lg:text-left ${
-                  activeMenu === menu ? "bg-blue-500/20" : "hover:bg-white/10"
-                }`}
-              >
-                {menu}
-              </div>
-            )
-          )}
+          {[
+            "dashboard",
+            "inventory",
+            "analytics",
+            "billing",
+            "khata",
+            "supplier",
+          ].map((menu) => (
+            <div
+              key={menu}
+              onClick={() => setActiveMenu(menu)}
+              className={`p-4 rounded-2xl cursor-pointer transition capitalize text-center lg:text-left ${
+                activeMenu === menu ? "bg-blue-500/20" : "hover:bg-white/10"
+              }`}
+            >
+              {menu}
+            </div>
+          ))}
 
           <button
             onClick={logout}
@@ -1108,6 +1114,8 @@ Powered By ClothPro
         )}
 
         {activeMenu === "khata" && <CustomerKhata user={user} />}
+
+        {activeMenu === "supplier" && <SupplierManagement user={user} />}
       </div>
     </div>
   );
