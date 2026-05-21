@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema({
     default: "Clothing",
   },
 
+  upiId: {
+    type: String,
+    default: "",
+  },
+
   licenseToken: {
     type: String,
     default: "",

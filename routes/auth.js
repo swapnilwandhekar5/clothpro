@@ -9,6 +9,7 @@ router.post("/register", async (req, res) => {
       shopName,
       ownerName,
       businessCategory,
+      upiId,
       email,
       password,
     } = req.body;
@@ -31,6 +32,7 @@ router.post("/register", async (req, res) => {
       shopName,
       ownerName,
       businessCategory: businessCategory || "Clothing",
+      upiId: upiId || "",
       email,
       password,
       shopId,
@@ -88,6 +90,29 @@ router.post("/login", async (req, res) => {
       message: "Login Success",
       user,
       token: user.licenseToken,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+router.put("/update-upi/:id", async (req, res) => {
+  try {
+    const { upiId } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { upiId },
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      message: "UPI ID Updated ✅",
+      user,
     });
   } catch (error) {
     res.json({

@@ -6,14 +6,40 @@ const Product = require("../models/Product");
 router.post("/add", async (req, res) => {
   try {
     const {
+      shopId,
+      shopName,
+      businessCategory,
+
       name,
       price,
       costPrice,
       quantity,
       imageUrl,
       barcode,
-      shopName,
-      shopId,
+
+      size,
+      color,
+      brand,
+
+      mrp,
+      expiryDate,
+      unit,
+      batchNo,
+      medicineType,
+
+      imeiNumber,
+      serialNumber,
+      warranty,
+      modelNumber,
+
+      itemType,
+      kitchenCategory,
+
+      serviceDuration,
+      staffCommission,
+
+      unitType,
+      supplierName,
     } = req.body;
 
     const finalBarcode =
@@ -22,21 +48,47 @@ router.post("/add", async (req, res) => {
         : "CLP" + Date.now();
 
     const product = new Product({
+      shopId,
+      shopName,
+      businessCategory,
+
       name,
       price,
       costPrice,
       quantity,
       imageUrl,
       barcode: finalBarcode,
-      shopName,
-      shopId,
+
+      size,
+      color,
+      brand,
+
+      mrp,
+      expiryDate,
+      unit,
+      batchNo,
+      medicineType,
+
+      imeiNumber,
+      serialNumber,
+      warranty,
+      modelNumber,
+
+      itemType,
+      kitchenCategory,
+
+      serviceDuration,
+      staffCommission,
+
+      unitType,
+      supplierName,
     });
 
     await product.save();
 
     res.json({
       success: true,
-      message: "Product Added Successfully",
+      message: "Product Added Successfully ✅",
       product,
     });
   } catch (error) {
@@ -65,7 +117,7 @@ router.delete("/delete/:id", async (req, res) => {
 
     res.json({
       success: true,
-      message: "Product Deleted",
+      message: "Product Deleted ✅",
     });
   } catch (error) {
     res.json({
@@ -81,22 +133,14 @@ router.put("/update/:id", async (req, res) => {
 
     const updateData = {};
 
-    if (name) {
-      updateData.name = name;
-    }
+    if (name) updateData.name = name;
+    if (quantity) updateData.quantity = quantity;
 
-    if (quantity) {
-      updateData.quantity = quantity;
-    }
-
-    await Product.findByIdAndUpdate(
-      req.params.id,
-      updateData
-    );
+    await Product.findByIdAndUpdate(req.params.id, updateData);
 
     res.json({
       success: true,
-      message: "Product Updated",
+      message: "Product Updated ✅",
     });
   } catch (error) {
     res.json({
