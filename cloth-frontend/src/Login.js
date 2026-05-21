@@ -5,7 +5,9 @@ function Login({ setUser }) {
 
   const [shopName, setShopName] = useState("");
   const [ownerName, setOwnerName] = useState("");
-  const [businessCategory, setBusinessCategory] = useState("Clothing");
+  const [businessCategory, setBusinessCategory] =
+    useState("Clothing");
+
   const [upiId, setUpiId] = useState("");
 
   const [email, setEmail] = useState("");
@@ -20,9 +22,11 @@ function Login({ setUser }) {
         return;
       }
 
-      if (!isLogin && (!shopName || !ownerName)) {
-        alert("Shop name and owner name required");
-        return;
+      if (!isLogin) {
+        if (!shopName || !ownerName) {
+          alert("Please fill all details");
+          return;
+        }
       }
 
       const url = isLogin
@@ -43,7 +47,7 @@ function Login({ setUser }) {
             password,
           };
 
-      const res = await fetch(url, {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +55,7 @@ function Login({ setUser }) {
         body: JSON.stringify(bodyData),
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
       if (!data.success) {
         alert(data.message);
@@ -78,85 +82,97 @@ function Login({ setUser }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex justify-center items-center p-6">
-      <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl w-full max-w-md shadow-2xl">
-        <h1 className="text-white text-4xl font-bold mb-8 text-center">
-          {isLogin
-            ? "🚀 SmartBiz Login"
-            : "🚀 Create Business"}
+    <div className="min-h-screen bg-black flex justify-center items-center p-6">
+      <div className="w-full max-w-md bg-slate-950 border border-slate-800 rounded-3xl p-8 shadow-2xl">
+        <h1 className="text-5xl font-bold text-white text-center mb-8">
+          🚀 {isLogin ? "Login" : "Create Business"}
         </h1>
 
         {!isLogin && (
           <>
             <input
-              className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none"
+              type="text"
               placeholder="Business / Shop Name"
               value={shopName}
-              onChange={(e) => setShopName(e.target.value)}
+              onChange={(e) =>
+                setShopName(e.target.value)
+              }
+              className="w-full p-4 mb-4 rounded-2xl bg-slate-900 text-white outline-none"
             />
 
             <input
-              className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none"
+              type="text"
               placeholder="Owner Name"
               value={ownerName}
-              onChange={(e) => setOwnerName(e.target.value)}
+              onChange={(e) =>
+                setOwnerName(e.target.value)
+              }
+              className="w-full p-4 mb-4 rounded-2xl bg-slate-900 text-white outline-none"
             />
 
             <select
-              className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none"
               value={businessCategory}
               onChange={(e) =>
                 setBusinessCategory(e.target.value)
               }
+              className="w-full p-4 mb-4 rounded-2xl bg-slate-900 text-white outline-none"
             >
               <option>Clothing</option>
               <option>Grocery</option>
               <option>Medical</option>
               <option>Restaurant</option>
               <option>Salon</option>
-              <option>Mobile Shop</option>
               <option>Electronics</option>
+              <option>Mobile Shop</option>
               <option>Hardware</option>
               <option>Footwear</option>
-              <option>Cosmetics</option>
               <option>General Store</option>
-              <option>Other</option>
             </select>
 
             <input
-              className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none"
-              placeholder="UPI ID (example: yourname@upi)"
+              type="text"
+              placeholder="UPI ID (example: swapnil@paytm)"
               value={upiId}
-              onChange={(e) => setUpiId(e.target.value)}
+              onChange={(e) =>
+                setUpiId(e.target.value)
+              }
+              className="w-full p-4 mb-4 rounded-2xl bg-slate-900 text-white outline-none"
             />
           </>
         )}
 
         <input
-          className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none"
+          type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
+          className="w-full p-4 mb-4 rounded-2xl bg-slate-900 text-white outline-none"
         />
 
         <input
           type="password"
-          className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-6 outline-none"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+          className="w-full p-4 mb-6 rounded-2xl bg-slate-900 text-white outline-none"
         />
 
         <button
           onClick={submitHandler}
-          className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 p-4 rounded-2xl text-white text-xl font-bold hover:scale-105 transition"
+          className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-4 rounded-2xl text-2xl font-bold"
         >
-          {isLogin ? "Login" : "Register Business"}
+          {isLogin
+            ? "Login"
+            : "Register Business"}
         </button>
 
         <p
+          className="text-center text-slate-400 mt-6 cursor-pointer"
           onClick={() => setIsLogin(!isLogin)}
-          className="text-center text-slate-400 mt-6 cursor-pointer hover:text-white transition"
         >
           {isLogin
             ? "Create New Business"
