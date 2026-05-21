@@ -4,6 +4,8 @@ import Login from "./Login";
 import AdminPanel from "./AdminPanel";
 import CustomerKhata from "./CustomerKhata";
 import SupplierManagement from "./SupplierManagement";
+import StaffManagement from "./StaffManagement";
+import StaffLogin from "./StaffLogin";
 
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
@@ -587,6 +589,10 @@ function App() {
     return <AdminPanel />;
   }
 
+  if (window.location.pathname === "/staff-login") {
+    return <StaffLogin setUser={setUser} />;
+  }
+
   if (!user) {
     return <Login setUser={setUser} />;
   }
@@ -1129,7 +1135,27 @@ ${data.invoice?.invoiceNumber || ""}`);
     khata: ui.khataTitle,
     supplier: ui.supplierTitle,
     settings: "Payment Settings",
+    staff: "Staff Management",
   };
+
+  const hasPermission = (menu) => {
+    if (!user?.isStaff) return true;
+    return Boolean(user?.permissions?.[menu]);
+  };
+
+  const allowedMenus = [
+    "dashboard",
+    "inventory",
+    "analytics",
+    "billing",
+    "khata",
+    "supplier",
+    "settings",
+    "staff",
+  ].filter((menu) => {
+    if (menu === "staff") return !user?.isStaff;
+    return hasPermission(menu);
+  });
 
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col lg:flex-row">
@@ -1138,10 +1164,16 @@ ${data.invoice?.invoiceNumber || ""}`);
           {ui.icon} {ui.appName}
         </h1>
         <p className="text-slate-400 mb-1">{user.shopName}</p>
-        <p className="text-cyan-400 mb-6 text-sm">{category}</p>
+        <p className="text-cyan-400 mb-1 text-sm">{category}</p>
+        {user?.isStaff && (
+          <p className="text-yellow-300 mb-6 text-sm">
+            Staff: {user.name} ({user.role})
+          </p>
+        )}
+        {!user?.isStaff && <p className="text-slate-500 mb-6 text-sm">Owner Access</p>}
 
         <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 lg:space-y-0">
-          {["dashboard", "inventory", "analytics", "billing", "khata", "supplier", "settings"].map(
+          {allowedMenus.map(
             (menu) => (
               <div
                 key={menu}
@@ -1171,7 +1203,7 @@ ${data.invoice?.invoiceNumber || ""}`);
         <p className="text-slate-400 mb-2">Welcome, {user.ownerName}</p>
         <p className="text-cyan-400 mb-10 text-lg">{ui.subtitle}</p>
 
-        {activeMenu === "dashboard" && (
+        {activeMenu === "dashboard" && hasPermission("dashboard") && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
               <motion.div
@@ -1223,7 +1255,7 @@ ${data.invoice?.invoiceNumber || ""}`);
           </>
         )}
 
-        {activeMenu === "inventory" && (
+        {activeMenu === "inventory" && hasPermission("inventory") && (
           <>
             <div className="bg-white/5 rounded-3xl p-6 lg:p-8 mb-10">
               <h2 className="text-3xl font-bold mb-6">{ui.addTitle}</h2>
@@ -1383,7 +1415,7 @@ ${data.invoice?.invoiceNumber || ""}`);
           </>
         )}
 
-        {activeMenu === "analytics" && (
+        {activeMenu === "analytics" && hasPermission("analytics") && (
           <>
             <h2 className="text-4xl font-bold mb-6">{ui.analyticsTitle}</h2>
             <div className="flex flex-wrap gap-4 mb-8">
@@ -1486,7 +1518,7 @@ ${data.invoice?.invoiceNumber || ""}`);
           </>
         )}
 
-        {activeMenu === "billing" && (
+        {activeMenu === "billing" && hasPermission("billing") && (
           <div className="bg-white/5 rounded-3xl p-6 lg:p-10">
             <h1 className="text-3xl lg:text-5xl font-bold mb-10">
               {ui.billingTitle}
@@ -1705,10 +1737,14 @@ ${data.invoice?.invoiceNumber || ""}`);
           </div>
         )}
 
-        {activeMenu === "khata" && <CustomerKhata user={user} />}
-        {activeMenu === "supplier" && <SupplierManagement user={user} />}
+        {activeMenu === "khata" && hasPermission("khata") && <CustomerKhata user={user} />}
+        {activeMenu === "supplier" && hasPermission("supplier") && (
+          <SupplierManagement user={user} />
+        )}
 
-        {activeMenu === "settings" && (
+        {activeMenu === "staff" && !user?.isStaff && <StaffManagement user={user} />}
+
+        {activeMenu === "settings" && hasPermission("settings") && (
           <div className="bg-white/5 rounded-3xl p-6 lg:p-8">
             <h2 className="text-4xl font-bold mb-6">💳 Payment Settings</h2>
 
