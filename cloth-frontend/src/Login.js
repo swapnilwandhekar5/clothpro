@@ -11,19 +11,26 @@ function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [expired, setExpired] = useState(false);
+  const API_URL = "https://clothpro.onrender.com";
 
   const submitHandler = async () => {
     try {
+      if (!email || !password) {
+        alert("Email and password required");
+        return;
+      }
+
+      if (!isLogin && (!shopName || !ownerName)) {
+        alert("Shop name and owner name required");
+        return;
+      }
+
       const url = isLogin
-        ? "https://clothpro.onrender.com/api/auth/login"
-        : "https://clothpro.onrender.com/api/auth/register";
+        ? `${API_URL}/api/auth/login`
+        : `${API_URL}/api/auth/register`;
 
       const bodyData = isLogin
-        ? {
-            email,
-            password,
-          }
+        ? { email, password }
         : {
             shopName,
             ownerName,
@@ -45,60 +52,20 @@ function Login({ setUser }) {
 
       if (!data.success) {
         alert(data.message);
-
-        if (data.message === "Subscription Expired") {
-          setExpired(true);
-        }
-
         return;
       }
 
       localStorage.setItem("clothUser", JSON.stringify(data.user));
-      localStorage.setItem("clothToken", data.token);
+      localStorage.setItem("clothToken", data.token || "");
 
       setUser(data.user);
 
       alert(data.message);
     } catch (error) {
       console.log(error);
-      alert("Something went wrong ❌");
+      alert("Live backend not connected. Please wait and try again.");
     }
   };
-
-  if (expired) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex justify-center items-center p-6">
-        <div className="bg-white/5 border border-red-500 p-10 rounded-3xl w-full max-w-md text-center text-white">
-          <h1 className="text-5xl mb-6">🚫</h1>
-
-          <h2 className="text-3xl font-bold mb-4">
-            Subscription Expired
-          </h2>
-
-          <p className="text-slate-300 mb-8">
-            Your subscription has expired. Please renew your plan to continue
-            using the software.
-          </p>
-
-          <a
-            href="https://wa.me/919999999999"
-            target="_blank"
-            rel="noreferrer"
-            className="block w-full bg-green-500 hover:bg-green-600 p-4 rounded-2xl text-xl font-bold transition"
-          >
-            Renew on WhatsApp
-          </a>
-
-          <button
-            onClick={() => setExpired(false)}
-            className="mt-4 text-slate-400 hover:text-white"
-          >
-            Back To Login
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-slate-950 flex justify-center items-center p-6">

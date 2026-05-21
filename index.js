@@ -18,8 +18,7 @@ app.use(express.json());
 
 mongoose
   .connect(
-    process.env.MONGO_URI ||
-      "mongodb+srv://zookal2407_db_user:swapnil123@swapnil.me1fpum.mongodb.net/smartbiz?retryWrites=true&w=majority&appName=swapnil"
+    "mongodb+srv://zookal2407_db_user:swapnil123@swapnil.me1fpum.mongodb.net/smartbiz?retryWrites=true&w=majority&appName=swapnil"
   )
   .then(() => {
     console.log("MongoDB Connected ✅");
