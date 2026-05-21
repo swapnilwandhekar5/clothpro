@@ -30,7 +30,10 @@ function Login({ setUser }) {
         : `${API_URL}/api/auth/register`;
 
       const bodyData = isLogin
-        ? { email, password }
+        ? {
+            email,
+            password,
+          }
         : {
             shopName,
             ownerName,
@@ -55,15 +58,22 @@ function Login({ setUser }) {
         return;
       }
 
-      localStorage.setItem("clothUser", JSON.stringify(data.user));
-      localStorage.setItem("clothToken", data.token || "");
+      localStorage.setItem(
+        "clothUser",
+        JSON.stringify(data.user)
+      );
+
+      localStorage.setItem(
+        "clothToken",
+        data.token || ""
+      );
 
       setUser(data.user);
 
       alert(data.message);
     } catch (error) {
       console.log(error);
-      alert("Live backend not connected. Please wait and try again.");
+      alert("Server Error ❌");
     }
   };
 
@@ -71,7 +81,9 @@ function Login({ setUser }) {
     <div className="min-h-screen bg-slate-950 flex justify-center items-center p-6">
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl w-full max-w-md shadow-2xl">
         <h1 className="text-white text-4xl font-bold mb-8 text-center">
-          {isLogin ? "🚀 SmartBiz Login" : "🚀 Create Business"}
+          {isLogin
+            ? "🚀 SmartBiz Login"
+            : "🚀 Create Business"}
         </h1>
 
         {!isLogin && (
@@ -93,7 +105,9 @@ function Login({ setUser }) {
             <select
               className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none"
               value={businessCategory}
-              onChange={(e) => setBusinessCategory(e.target.value)}
+              onChange={(e) =>
+                setBusinessCategory(e.target.value)
+              }
             >
               <option>Clothing</option>
               <option>Grocery</option>
@@ -111,7 +125,7 @@ function Login({ setUser }) {
 
             <input
               className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none"
-              placeholder="UPI ID (example: name@upi)"
+              placeholder="UPI ID (example: yourname@upi)"
               value={upiId}
               onChange={(e) => setUpiId(e.target.value)}
             />
@@ -144,7 +158,9 @@ function Login({ setUser }) {
           onClick={() => setIsLogin(!isLogin)}
           className="text-center text-slate-400 mt-6 cursor-pointer hover:text-white transition"
         >
-          {isLogin ? "Create New Business" : "Already have account?"}
+          {isLogin
+            ? "Create New Business"
+            : "Already have account?"}
         </p>
       </div>
     </div>
