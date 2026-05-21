@@ -1655,18 +1655,18 @@ ${data.invoice?.invoiceNumber || ""}`);
                 <h2 className="text-3xl font-bold mb-8">{ui.billingTitle} Invoice</h2>
 
                 {category === "Restaurant" && (
-                  <div className="mb-6 bg-orange-500/10 border border-orange-500/30 p-4 rounded-2xl">
-                    <div className="flex justify-between text-lg mb-2">
-                      <span>Order Type</span>
-                      <span className="font-bold">{orderType}</span>
-                    </div>
-                    <div className="flex justify-between text-lg">
-                      <span>Table</span>
-                      <span className="font-bold">{tableNumber || "-"}</span>
-                    </div>
-                  </div>
-                )
+  <div className="mb-6 bg-orange-500/10 border border-orange-500/30 p-4 rounded-2xl">
+    <div className="flex justify-between text-lg mb-2">
+      <span>Order Type</span>
+      <span className="font-bold">{orderType}</span>
+    </div>
 
+    <div className="flex justify-between text-lg">
+      <span>Table</span>
+      <span className="font-bold">{tableNumber || "-"}</span>
+    </div>
+  </div>
+)}
                 {!upiId && finalTotal > 0 && (
                   <div className="mb-6 bg-yellow-500/10 border border-yellow-500/30 p-5 rounded-3xl text-center">
                     <p className="text-yellow-300 font-bold text-lg">
