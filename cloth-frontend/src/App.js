@@ -973,75 +973,67 @@ Powered By SmartBiz OS
         return;
       }
 
-      for (const item of cart) {
-        const itemProfit =
-          (Number(item.price) - Number(item.costPrice || 0)) * Number(item.qty);
+      const invoiceItems = cart.map((item) => ({
+        productId: item._id,
+        productName: item.name,
+        barcode: item.barcode,
+        price: Number(item.price),
+        costPrice: Number(item.costPrice || 0),
+        quantity: Number(item.qty),
+        unit: item.unit || "pcs",
+        unitValue: item.unitValue || 1,
+      }));
 
-        await fetch("https://clothpro.onrender.com/api/sales/add", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            productName: item.name,
-            price: item.price,
-            costPrice: item.costPrice || 0,
-            quantity: item.qty,
-            total: item.price * item.qty,
-            profit: itemProfit,
-            shopName: user.shopName,
-            shopId: user.shopId,
-          }),
-        });
+      const res = await fetch("https://clothpro.onrender.com/api/invoice/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          shopId: user.shopId,
+          shopName: user.shopName,
+          businessCategory: category,
 
-        await fetch(
-          `https://clothpro.onrender.com/api/product/update/${item._id}?quantity=${
-            Number(item.quantity) - Number(item.qty)
-          }`,
-          { method: "PUT" }
-        );
+          customerName: customerName || "Walk-in",
+          customerPhone: "",
+
+          orderType: category === "Restaurant" ? orderType : "",
+          tableNumber: category === "Restaurant" ? tableNumber : "",
+
+          items: invoiceItems,
+
+          subtotal,
+          gst,
+          discount: discountAmount,
+          finalTotal,
+
+          paymentMode: upiId ? "UPI/Cash" : "Cash",
+          paymentStatus: "Paid",
+          upiId,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        alert(data.message || "Invoice Error ❌");
+        return;
       }
 
       printInvoice();
+
       setCart([]);
       setCustomerName("");
       setDiscount(0);
       setOrderType("Dine-in");
       setTableNumber("");
+
       fetchProducts();
       fetchSales();
-      alert("Sale Saved ✅");
+
+      alert(`Single Invoice Created ✅
+${data.invoice?.invoiceNumber || ""}`);
     } catch (error) {
       console.log(error);
-      alert("Sale Error ❌");
-    }
-  };
-
-  const updateUpiId = async () => {
-    const newUpiId = prompt("Enter your UPI ID", user?.upiId || "");
-
-    if (!newUpiId) return;
-
-    try {
-      const res = await fetch(
-        `https://clothpro.onrender.com/api/auth/update-upi/${user._id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ upiId: newUpiId }),
-        }
-      );
-
-      const data = await res.json();
-
-      if (data.success) {
-        localStorage.setItem("clothUser", JSON.stringify(data.user));
-        setUser(data.user);
-        alert("UPI ID Updated ✅");
-      } else {
-        alert(data.message || "UPI update failed ❌");
-      }
-    } catch (error) {
-      console.log(error);
-      alert("UPI update error ❌");
+      alert("Invoice Save Error ❌");
     }
   };
 
