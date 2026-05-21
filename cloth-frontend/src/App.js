@@ -1755,6 +1755,40 @@ ${data.invoice?.invoiceNumber || ""}`);
               </h3>
 
               <button
+              const updateUpiId = async () => {
+  try {
+    const response = await fetch(
+      `https://clothpro.onrender.com/api/auth/update-upi/${user._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          upiId,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+      localStorage.setItem(
+        "clothUser",
+        JSON.stringify(data.user)
+      );
+
+      setUser(data.user);
+
+      alert("UPI Updated ✅");
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.log(error);
+    alert("UPI Update Failed ❌");
+  }
+};
                 onClick={updateUpiId}
                 className="bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-4 rounded-2xl text-xl font-bold"
               >
