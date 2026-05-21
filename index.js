@@ -5,9 +5,11 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
 const salesRoutes = require("./routes/sales");
+const adminRoutes = require("./routes/adminRoutes");
 const customerRoutes = require("./routes/customer");
 const supplierRoutes = require("./routes/supplier");
 const invoiceRoutes = require("./routes/invoice");
+const staffRoutes = require("./routes/staff");
 
 const app = express();
 
@@ -16,7 +18,8 @@ app.use(express.json());
 
 mongoose
   .connect(
-    "mongodb+srv://zookal2407_db_user:swapnil123@swapnil.me1fpum.mongodb.net/smartbiz?retryWrites=true&w=majority&appName=swapnil"
+    process.env.MONGO_URI ||
+      "mongodb+srv://zookal2407_db_user:swapnil123@swapnil.me1fpum.mongodb.net/smartbiz?retryWrites=true&w=majority&appName=swapnil"
   )
   .then(() => {
     console.log("MongoDB Connected ✅");
@@ -31,16 +34,13 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
-
 app.use("/api/product", productRoutes);
-
 app.use("/api/sales", salesRoutes);
-
+app.use("/api/admin", adminRoutes);
 app.use("/api/customer", customerRoutes);
-
 app.use("/api/supplier", supplierRoutes);
-
 app.use("/api/invoice", invoiceRoutes);
+app.use("/api/staff", staffRoutes);
 
 const PORT = process.env.PORT || 5000;
 
