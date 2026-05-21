@@ -1,17 +1,20 @@
 const express = require("express");
-const router = express.Router();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
+
+const router = express.Router();
 
 router.post("/register", async (req, res) => {
   try {
     const {
       shopName,
       ownerName,
-      businessCategory,
-      upiId,
       email,
       password,
+      businessCategory,
+      upiId,
     } = req.body;
 
     const existingUser = await User.findOne({ email });
@@ -19,38 +22,43 @@ router.post("/register", async (req, res) => {
     if (existingUser) {
       return res.json({
         success: false,
-        message: "Email already registered",
+        message: "Email already exists",
       });
     }
 
-    const shopId = Date.now().toString();
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const licenseToken =
-      "CLP-" + Math.floor(100000 + Math.random() * 900000);
-
-    const user = new User({
+    const user = await User.create({
       shopName,
       ownerName,
-      businessCategory: businessCategory || "Clothing",
-      upiId: upiId || "",
       email,
-      password,
-      shopId,
-      licenseToken,
+      password: hashedPassword,
+      businessCategory,
+      upiId: upiId || "swapnil@paytm",
     });
 
-    await user.save();
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      "smartbizsecret",
+      {
+        expiresIn: "30d",
+      }
+    );
 
     res.json({
       success: true,
-      message: "Registration Success",
+      message: "Business Registered Successfully ✅",
+      token,
       user,
-      token: licenseToken,
     });
   } catch (error) {
+    console.log(error);
+
     res.json({
       success: false,
-      message: error.message,
+      message: "Register Error ❌",
     });
   }
 });
@@ -59,42 +67,49 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({
-      email,
-      password,
-    });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.json({
         success: false,
-        message: "Invalid Credentials",
+        message: "User not found",
       });
     }
 
-    if (!user.isActive) {
+    const isMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!isMatch) {
       return res.json({
         success: false,
-        message: "Account Blocked",
+        message: "Invalid password",
       });
     }
 
-    if (user.expiryDate && new Date(user.expiryDate) < new Date()) {
-      return res.json({
-        success: false,
-        message: "Subscription Expired",
-      });
-    }
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      "smartbizsecret",
+      {
+        expiresIn: "30d",
+      }
+    );
 
     res.json({
       success: true,
-      message: "Login Success",
+      message: "Login Success ✅",
+      token,
       user,
-      token: user.licenseToken,
     });
   } catch (error) {
+    console.log(error);
+
     res.json({
       success: false,
-      message: error.message,
+      message: "Login Error ❌",
     });
   }
 });
@@ -105,19 +120,25 @@ router.put("/update-upi/:id", async (req, res) => {
 
     const user = await User.findByIdAndUpdate(
       req.params.id,
-      { upiId },
-      { new: true }
+      {
+        upiId,
+      },
+      {
+        new: true,
+      }
     );
 
     res.json({
       success: true,
-      message: "UPI ID Updated ✅",
+      message: "UPI Updated ✅",
       user,
     });
   } catch (error) {
+    console.log(error);
+
     res.json({
       success: false,
-      message: error.message,
+      message: "UPI Update Failed ❌",
     });
   }
 });
