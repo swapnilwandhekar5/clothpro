@@ -1,56 +1,52 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  shopName: String,
-  ownerName: String,
+const userSchema = new mongoose.Schema(
+  {
+    shopName: {
+      type: String,
+      required: true,
+    },
 
-  email: {
-    type: String,
-    unique: true,
+    ownerName: {
+      type: String,
+      required: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
+    password: {
+      type: String,
+      required: true,
+    },
+
+    businessCategory: {
+      type: String,
+      default: "Clothing",
+    },
+
+    upiId: {
+      type: String,
+      default: "swapnil@paytm",
+    },
+
+    shopId: {
+      type: String,
+      default: () =>
+        "SHOP" + Math.floor(Math.random() * 1000000),
+    },
+
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-
-  password: String,
-  shopId: String,
-
-  businessCategory: {
-    type: String,
-    default: "Clothing",
-  },
-
-  upiId: {
-    type: String,
-    default: "",
-  },
-
-  licenseToken: {
-    type: String,
-    default: "",
-  },
-
-  subscriptionStatus: {
-    type: String,
-    default: "trial",
-  },
-
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
-
-  plan: {
-    type: String,
-    default: "free",
-  },
-
-  expiryDate: {
-    type: Date,
-    default: null,
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model("User", userSchema);
