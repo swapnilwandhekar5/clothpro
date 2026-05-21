@@ -316,6 +316,9 @@ function App() {
   const [staffCommission, setStaffCommission] = useState("");
   const [unitType, setUnitType] = useState("");
   const [supplierName, setSupplierName] = useState("");
+  const [saltComposition, setSaltComposition] = useState("");
+  const [prescriptionRequired, setPrescriptionRequired] = useState("false");
+  const [rackNumber, setRackNumber] = useState("");
   const [orderType, setOrderType] = useState("Dine-in");
   const [tableNumber, setTableNumber] = useState("");
 
@@ -349,7 +352,14 @@ function App() {
         <>
           <input className={inputClass} placeholder="MRP" value={mrp} onChange={(e) => setMrp(e.target.value)} />
           <input className={inputClass} placeholder="Expiry Date" type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
-          <input className={inputClass} placeholder="Unit e.g. kg / packet / litre" value={unit} onChange={(e) => setUnit(e.target.value)} />
+          <select className={inputClass} value={unit} onChange={(e) => setUnit(e.target.value)}>
+            <option value="pcs">pcs</option>
+            <option value="kg">kg</option>
+            <option value="gram">gram</option>
+            <option value="litre">litre</option>
+            <option value="ml">ml</option>
+            <option value="packet">packet</option>
+          </select>
           <input className={inputClass} placeholder="Brand" value={brand} onChange={(e) => setBrand(e.target.value)} />
         </>
       );
@@ -362,6 +372,12 @@ function App() {
           <input className={inputClass} placeholder="Expiry Date" type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
           <input className={inputClass} placeholder="Medicine Type" value={medicineType} onChange={(e) => setMedicineType(e.target.value)} />
           <input className={inputClass} placeholder="MRP" value={mrp} onChange={(e) => setMrp(e.target.value)} />
+          <input className={inputClass} placeholder="Salt Composition" value={saltComposition} onChange={(e) => setSaltComposition(e.target.value)} />
+          <input className={inputClass} placeholder="Rack Number" value={rackNumber} onChange={(e) => setRackNumber(e.target.value)} />
+          <select className={inputClass} value={prescriptionRequired} onChange={(e) => setPrescriptionRequired(e.target.value)}>
+            <option value="false">Prescription Not Required</option>
+            <option value="true">Prescription Required</option>
+          </select>
         </>
       );
     }
@@ -444,9 +460,14 @@ function App() {
     if (item.brand) details.push(`Brand: ${item.brand}`);
     if (item.mrp) details.push(`MRP: Rs ${item.mrp}`);
     if (item.expiryDate) details.push(`Exp: ${item.expiryDate}`);
+    if (item.manufacturingDate) details.push(`MFG: ${item.manufacturingDate}`);
     if (item.unit) details.push(`Unit: ${item.unit}`);
+    if (item.unitValue) details.push(`Unit Value: ${item.unitValue}`);
     if (item.batchNo) details.push(`Batch: ${item.batchNo}`);
     if (item.medicineType) details.push(`Type: ${item.medicineType}`);
+    if (item.saltComposition) details.push(`Salt: ${item.saltComposition}`);
+    if (item.prescriptionRequired) details.push("Rx Required");
+    if (item.rackNumber) details.push(`Rack: ${item.rackNumber}`);
     if (item.imeiNumber) details.push(`IMEI: ${item.imeiNumber}`);
     if (item.serialNumber) details.push(`Serial: ${item.serialNumber}`);
     if (item.warranty) details.push(`Warranty: ${item.warranty}`);
@@ -459,6 +480,37 @@ function App() {
     if (item.supplierName) details.push(`Supplier: ${item.supplierName}`);
 
     return details.length ? details.join(" | ") : "-";
+  };
+
+  const getExpiryStatus = (item) => {
+    if (!item.expiryDate) return null;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const expiry = new Date(item.expiryDate);
+    expiry.setHours(0, 0, 0, 0);
+
+    const diffDays = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return {
+        label: "Expired",
+        className: "bg-red-500/20 text-red-300",
+      };
+    }
+
+    if (diffDays <= 30) {
+      return {
+        label: `Expiring in ${diffDays} days`,
+        className: "bg-yellow-500/20 text-yellow-300",
+      };
+    }
+
+    return {
+      label: "Expiry OK",
+      className: "bg-green-500/20 text-green-300",
+    };
   };
 
   const subtotal = cart.reduce(
@@ -575,6 +627,9 @@ function App() {
         staffCommission,
         unitType,
         supplierName,
+        saltComposition,
+        prescriptionRequired: prescriptionRequired === "true",
+        rackNumber,
 
         shopName: user.shopName,
         shopId: user.shopId,
@@ -605,6 +660,9 @@ function App() {
     setStaffCommission("");
     setUnitType("");
     setSupplierName("");
+    setSaltComposition("");
+    setPrescriptionRequired("false");
+    setRackNumber("");
 
     fetchProducts();
     alert("Product Added ✅");
@@ -667,17 +725,37 @@ function App() {
   const increaseQty = (id) => {
     setCart(
       cart.map((item) =>
-        item._id === id ? { ...item, qty: item.qty + 1 } : item
+        item._id === id
+          ? { ...item, qty: Number(item.qty) + (category === "Grocery" ? 0.25 : 1) }
+          : item
       )
     );
   };
 
   const decreaseQty = (id) => {
     setCart(
+      cart.map((item) => {
+        if (item._id !== id) return item;
+
+        const step = category === "Grocery" ? 0.25 : 1;
+        const nextQty = Number(item.qty) - step;
+
+        return {
+          ...item,
+          qty: nextQty > 0 ? Number(nextQty.toFixed(2)) : step,
+        };
+      })
+    );
+  };
+
+  const updateCartQty = (id, value) => {
+    const numericQty = Number(value);
+
+    if (!numericQty || numericQty <= 0) return;
+
+    setCart(
       cart.map((item) =>
-        item._id === id
-          ? { ...item, qty: item.qty > 1 ? item.qty - 1 : 1 }
-          : item
+        item._id === id ? { ...item, qty: numericQty } : item
       )
     );
   };
@@ -1255,12 +1333,18 @@ ${data.invoice?.invoiceNumber || ""}`);
                           <td className="p-4">{item.barcode || "-"}</td>
                           <td className="p-4">Rs {item.price}</td>
                           <td className="p-4">Rs {item.costPrice || 0}</td>
-                          <td className="p-4">{item.quantity}</td>
+                          <td className="p-4">
+                            {item.quantity} {item.unit || "pcs"}
+                          </td>
                           <td className="p-4 text-sm text-slate-300 max-w-xs">
                             {getProductDetails(item)}
                           </td>
                           <td className="p-4">
-                            {Number(item.quantity) <= 2 ? (
+                            {getExpiryStatus(item) ? (
+                              <span className={`${getExpiryStatus(item).className} px-3 py-1 rounded-xl`}>
+                                {getExpiryStatus(item).label}
+                              </span>
+                            ) : Number(item.quantity) <= 2 ? (
                               <span className="bg-red-500/20 text-red-300 px-3 py-1 rounded-xl">
                                 Low Stock
                               </span>
@@ -1501,7 +1585,18 @@ ${data.invoice?.invoiceNumber || ""}`);
                           >
                             -
                           </button>
-                          <span className="text-2xl font-bold">{item.qty}</span>
+                          <input
+                            type="number"
+                            step={category === "Grocery" ? "0.01" : "1"}
+                            min="0.01"
+                            className="bg-slate-800 w-24 p-3 rounded-xl text-center text-xl font-bold"
+                            value={item.qty}
+                            onChange={(e) => updateCartQty(item._id, e.target.value)}
+                          />
+
+                          <span className="text-slate-400 text-sm">
+                            {item.unit || "pcs"}
+                          </span>
                           <button
                             onClick={() => increaseQty(item._id)}
                             className="bg-green-500 w-10 h-10 rounded-xl text-xl"
