@@ -1,8 +1,10 @@
 const express = require("express");
+
 const router = express.Router();
 
 const Invoice = require("../models/Invoice");
 const Product = require("../models/Product");
+const Sale = require("../models/Sale");
 
 router.post("/create", async (req, res) => {
   try {
@@ -12,6 +14,8 @@ router.post("/create", async (req, res) => {
       businessCategory,
       customerName,
       customerPhone,
+      customerAddress,
+      customerGST,
       orderType,
       tableNumber,
       items,
@@ -24,101 +28,86 @@ router.post("/create", async (req, res) => {
       upiId,
     } = req.body;
 
-    const invoiceNumber = "INV-" + Date.now();
-
-    let totalProfit = 0;
-    const finalItems = [];
-
-    for (const item of items) {
-      const product = await Product.findById(item.productId);
-
-      if (!product) continue;
-
-      const soldQty = Number(item.quantity);
-
-      if (Number(product.quantity) < soldQty) {
-        return res.json({
-          success: false,
-          message: `${product.name} stock not available`,
-        });
-      }
-
-      const itemTotal = Number(item.price) * soldQty;
-
-      const itemProfit =
-        (Number(item.price) - Number(product.costPrice || 0)) *
-        soldQty;
-
-      totalProfit += itemProfit;
-
-      product.quantity =
-        Number(product.quantity) - soldQty;
-
-      await product.save();
-
-      finalItems.push({
-        productId: product._id,
-        productName: product.name,
-        barcode: product.barcode,
-
-        price: product.price,
-        costPrice: product.costPrice || 0,
-        quantity: soldQty,
-
-        unit: product.unit,
-        unitValue: product.unitValue,
-
-        total: itemTotal,
-        profit: itemProfit,
-
-        size: product.size,
-        color: product.color,
-        brand: product.brand,
-        batchNo: product.batchNo,
-        expiryDate: product.expiryDate,
-        imeiNumber: product.imeiNumber,
-        serialNumber: product.serialNumber,
+    if (!shopId || !items || items.length === 0) {
+      return res.json({
+        success: false,
+        message: "Invoice items missing ❌",
       });
     }
 
-    const invoice = new Invoice({
+    const invoiceNumber = "INV-" + Date.now();
+
+    const invoice = await Invoice.create({
+      invoiceNumber,
       shopId,
       shopName,
       businessCategory,
-
-      invoiceNumber,
-
       customerName: customerName || "Walk-in",
-      customerPhone,
-
-      orderType,
-      tableNumber,
-
-      items: finalItems,
-
-      subtotal,
-      gst,
-      discount,
-      finalTotal,
-      totalProfit,
-
+      customerPhone: customerPhone || "",
+      customerAddress: customerAddress || "",
+      customerGST: customerGST || "",
+      orderType: orderType || "",
+      tableNumber: tableNumber || "",
+      items,
+      subtotal: Number(subtotal || 0),
+      gst: Number(gst || 0),
+      discount: Number(discount || 0),
+      finalTotal: Number(finalTotal || 0),
       paymentMode: paymentMode || "Cash",
       paymentStatus: paymentStatus || "Paid",
-
-      upiId,
+      upiId: upiId || "",
+      date: new Date(),
     });
 
-    await invoice.save();
+    for (const item of items) {
+      const qty = Number(item.quantity || item.qty || 0);
+      const price = Number(item.price || 0);
+      const costPrice = Number(item.costPrice || 0);
+      const total = Number(item.total || price * qty);
+      const profit = Number(item.profit || (price - costPrice) * qty);
 
-    res.json({
+      await Sale.create({
+        invoiceNumber,
+        shopId,
+        shopName,
+        businessCategory,
+        productId: item.productId,
+        productName: item.productName || item.name,
+        barcode: item.barcode || "",
+        hsnCode: item.hsnCode || item.hsn || "0000",
+        price,
+        costPrice,
+        quantity: qty,
+        total,
+        profit,
+        customerName: customerName || "Walk-in",
+        customerPhone: customerPhone || "",
+        paymentMode: paymentMode || "Cash",
+        paymentStatus: paymentStatus || "Paid",
+        date: new Date(),
+      });
+
+      if (item.productId && qty > 0) {
+        await Product.findByIdAndUpdate(item.productId, {
+          $inc: {
+            quantity: -qty,
+          },
+        });
+      }
+    }
+
+    return res.json({
       success: true,
-      message: "Invoice Created ✅",
+      message: "Invoice Created & Sales Updated ✅",
       invoice,
     });
   } catch (error) {
-    res.json({
+    console.log(error);
+
+    return res.json({
       success: false,
-      message: error.message,
+      message: "Invoice Create Error ❌",
+      error: error.message,
     });
   }
 });
@@ -131,7 +120,32 @@ router.get("/all/:shopId", async (req, res) => {
 
     res.json(invoices);
   } catch (error) {
+    console.log(error);
     res.json([]);
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.id);
+
+    if (!invoice) {
+      return res.json({
+        success: false,
+        message: "Invoice not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      invoice,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: "Invoice fetch error",
+    });
   }
 });
 
