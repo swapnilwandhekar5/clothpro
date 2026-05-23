@@ -327,6 +327,9 @@ function App() {
   const [search, setSearch] = useState("");
   const [barcodeSearch, setBarcodeSearch] = useState("");
   const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [customerAddress, setCustomerAddress] = useState("");
+  const [customerGST, setCustomerGST] = useState("");
   const [discount, setDiscount] = useState(0);
   const [activeMenu, setActiveMenu] = useState("dashboard");
   const [analyticsRange, setAnalyticsRange] = useState("daily");
@@ -888,68 +891,182 @@ function App() {
   };
 
   const printInvoice = () => {
+    const invoiceNo = "SB/" + new Date().getFullYear() + "/" + Date.now();
+
     const invoiceItems = cart
       .map(
-        (item) => `
+        (item, index) => `
         <tr>
-          <td>${item.name} x ${item.qty}</td>
-          <td align="right">Rs ${item.price * item.qty}</td>
+          <td>${index + 1}</td>
+          <td>
+            <b>${item.name}</b><br/>
+            ${item.size ? "Size: " + item.size + "<br/>" : ""}
+            ${item.color ? "Color: " + item.color + "<br/>" : ""}
+            ${item.brand ? "Brand: " + item.brand + "<br/>" : ""}
+            ${item.imeiNumber ? "IMEI: " + item.imeiNumber + "<br/>" : ""}
+            ${item.modelNumber ? "Model: " + item.modelNumber + "<br/>" : ""}
+            ${item.warranty ? "Warranty: " + item.warranty + "<br/>" : ""}
+            ${item.batchNo ? "Batch: " + item.batchNo + "<br/>" : ""}
+            ${item.expiryDate ? "Exp: " + item.expiryDate : ""}
+          </td>
+          <td>${item.hsn || "0000"}</td>
+          <td><b>${item.qty} ${item.unit || "Nos"}</b></td>
+          <td>${Number(item.price).toFixed(2)}</td>
+          <td>${item.unit || "Nos"}</td>
+          <td>0</td>
+          <td><b>${(item.price * item.qty).toFixed(2)}</b></td>
         </tr>
       `
       )
       .join("");
 
-    const win = window.open("", "", "width=350,height=700");
+    const cgst = gst / 2;
+    const sgst = gst / 2;
+
+    const win = window.open("", "", "width=1000,height=900");
+
     win.document.write(`
       <html>
         <head>
-          <title>${ui.billingTitle}</title>
+          <title>Tax Invoice</title>
           <style>
-            body{font-family: monospace;width:280px;padding:10px;}
-            h2,p{text-align:center;margin:4px 0;}
-            table{width:100%;border-collapse:collapse;margin-top:10px;}
-            td{padding:4px 0;font-size:14px;}
-            .line{border-top:1px dashed black;margin:8px 0;}
-            .total{font-size:18px;font-weight:bold;}
-            .footer{text-align:center;margin-top:20px;font-size:12px;}
+            body { font-family: Arial, sans-serif; padding: 25px; color: #000; }
+            .invoice { width: 900px; margin: auto; }
+            .center { text-align: center; }
+            table { width: 100%; border-collapse: collapse; }
+            td, th { border: 1px solid #000; padding: 6px; font-size: 14px; vertical-align: top; }
+            .no-border td { border: none; }
+            .title { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+            .bold { font-weight: bold; }
+            .right { text-align: right; }
+            .big { font-size: 22px; font-weight: bold; }
+            .footer { text-align: center; margin-top: 10px; }
+            @media print { body { padding: 0; } .invoice { width: 100%; } }
           </style>
         </head>
+
         <body>
-          <h2>${user.shopName}</h2>
-          <p>${ui.billingTitle}</p>
-          <div class="line"></div>
-          <p>Date: ${new Date().toLocaleDateString()}</p>
-          <p>Customer: ${customerName || "Walk-in"}</p>
-          <div class="line"></div>
-          <table>${invoiceItems}</table>
-          <div class="line"></div>
-          <table>
-            <tr><td>Subtotal</td><td align="right">Rs ${subtotal}</td></tr>
-            <tr><td>GST</td><td align="right">Rs ${gst.toFixed(2)}</td></tr>
-            <tr><td>Discount</td><td align="right">- Rs ${discountAmount}</td></tr>
-            <tr class="total"><td>Total</td><td align="right">Rs ${finalTotal.toFixed(
-              2
-            )}</td></tr>
-          </table>
-          <div class="line"></div>
-          ${
-            qrImage
-              ? `<div style="text-align:center;margin:10px 0;">
-                  <p><b>Scan & Pay</b></p>
-                  <img src="${qrImage}" style="width:150px;height:150px;" />
-                  <p>${upiId}</p>
-                </div>
-                <div class="line"></div>`
-              : ""
-          }
-          <div class="footer">
-            Thank You<br/>
-            Visit Again<br/>
-            Powered By SmartBiz OS
+          <div class="invoice">
+            <div class="center title">Tax Invoice</div>
+
+            <table class="no-border">
+              <tr>
+                <td>
+                  <b>IRN</b> : ${invoiceNo}<br/>
+                  <b>Ack No</b> : ${Date.now()}<br/>
+                  <b>Ack Date</b> : ${new Date().toLocaleDateString()}
+                </td>
+                <td class="center">
+                  <b>e-Invoice / UPI QR</b><br/>
+                  ${qrImage ? `<img src="${qrImage}" style="width:150px;height:150px;" />` : ""}
+                </td>
+              </tr>
+            </table>
+
+            <table>
+              <tr>
+                <td rowspan="3" style="width:50%;">
+                  <b>${user.shopName}</b><br/>
+                  ${category} Business<br/>
+                  GSTIN/UIN : ${user.gstin || "-"}<br/>
+                  State Name : Maharashtra, Code : 27<br/>
+                  UPI ID : ${upiId || "-"}
+                </td>
+                <td>Invoice No.<br/><b>${invoiceNo}</b></td>
+                <td>Dated<br/><b>${new Date().toLocaleDateString()}</b></td>
+              </tr>
+              <tr>
+                <td>Delivery Note</td>
+                <td>Mode/Terms of Payment<br/><b>Cash / UPI</b></td>
+              </tr>
+              <tr>
+                <td>Reference No. & Date</td>
+                <td>Other References</td>
+              </tr>
+              <tr>
+                <td>
+                  Consignee (Ship to)<br/>
+                  <b>${customerName || "Walk-in Customer"}</b><br/>
+                  ${customerAddress || "-"}<br/>
+                  GSTIN/UIN : ${customerGST || "-"}<br/>
+                  Mobile : ${customerPhone || "-"}
+                </td>
+                <td>Buyer's Order No.</td>
+                <td>Dated</td>
+              </tr>
+              <tr>
+                <td>
+                  Buyer (Bill to)<br/>
+                  <b>${customerName || "Walk-in Customer"}</b><br/>
+                  ${customerAddress || "-"}<br/>
+                  GSTIN/UIN : ${customerGST || "-"}<br/>
+                  Mobile : ${customerPhone || "-"}
+                </td>
+                <td colspan="2">
+                  Terms of Delivery<br/>
+                  ${category === "Restaurant" ? `Order: ${orderType}, Table: ${tableNumber || "-"}` : "-"}
+                </td>
+              </tr>
+            </table>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Sl No.</th>
+                  <th>Description of Goods</th>
+                  <th>HSN/SAC</th>
+                  <th>Quantity</th>
+                  <th>Rate</th>
+                  <th>per</th>
+                  <th>Disc. %</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${invoiceItems}
+                <tr><td></td><td class="right bold">CGST</td><td></td><td></td><td></td><td></td><td></td><td class="right"><b>${cgst.toFixed(2)}</b></td></tr>
+                <tr><td></td><td class="right bold">SGST</td><td></td><td></td><td></td><td></td><td></td><td class="right"><b>${sgst.toFixed(2)}</b></td></tr>
+                <tr><td></td><td class="right bold">Discount</td><td></td><td></td><td></td><td></td><td></td><td class="right"><b>- ${discountAmount.toFixed(2)}</b></td></tr>
+                <tr><td></td><td class="right bold">Total</td><td></td><td class="bold">${cart.reduce((a, b) => a + Number(b.qty), 0)}</td><td></td><td></td><td></td><td class="right big">₹ ${finalTotal.toFixed(2)}</td></tr>
+              </tbody>
+            </table>
+
+            <table>
+              <tr>
+                <td colspan="2">Amount Chargeable (in words)<br/><b>Indian Rupees ${Math.round(finalTotal)} Only</b></td>
+                <td class="right">E. & O.E</td>
+              </tr>
+            </table>
+
+            <table>
+              <tr>
+                <th>HSN/SAC</th><th>Taxable Value</th><th>Central Tax Rate</th><th>Central Tax Amount</th><th>State Tax Rate</th><th>State Tax Amount</th><th>Total Tax Amount</th>
+              </tr>
+              <tr>
+                <td>0000</td><td>${subtotal.toFixed(2)}</td><td>9%</td><td>${cgst.toFixed(2)}</td><td>9%</td><td>${sgst.toFixed(2)}</td><td>${gst.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td class="bold">Total</td><td class="bold">${subtotal.toFixed(2)}</td><td></td><td class="bold">${cgst.toFixed(2)}</td><td></td><td class="bold">${sgst.toFixed(2)}</td><td class="bold">${gst.toFixed(2)}</td>
+              </tr>
+            </table>
+
+            <table>
+              <tr>
+                <td>
+                  Tax Amount (in words) : <b>Indian Rupees ${Math.round(gst)} Only</b><br/><br/>
+                  <b>Declaration</b><br/>
+                  We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.
+                </td>
+                <td class="right">for <b>${user.shopName}</b><br/><br/><br/><br/>Authorised Signatory</td>
+              </tr>
+            </table>
+
+            <div class="footer">This is a Computer Generated Invoice</div>
           </div>
         </body>
       </html>
     `);
+
     win.document.close();
     win.print();
   };
@@ -1077,7 +1194,9 @@ Powered By SmartBiz OS
           businessCategory: category,
 
           customerName: customerName || "Walk-in",
-          customerPhone: "",
+          customerPhone,
+          customerAddress,
+          customerGST,
 
           orderType: category === "Restaurant" ? orderType : "",
           tableNumber: category === "Restaurant" ? tableNumber : "",
@@ -1106,6 +1225,9 @@ Powered By SmartBiz OS
 
       setCart([]);
       setCustomerName("");
+      setCustomerPhone("");
+      setCustomerAddress("");
+      setCustomerGST("");
       setDiscount(0);
       setOrderType("Dine-in");
       setTableNumber("");
@@ -1118,6 +1240,35 @@ ${data.invoice?.invoiceNumber || ""}`);
     } catch (error) {
       console.log(error);
       alert("Invoice Save Error ❌");
+    }
+  };
+
+  const updateUpiId = async () => {
+    try {
+      const newUpi = prompt("Enter New UPI ID", user?.upiId || "");
+      if (!newUpi) return;
+
+      const response = await fetch(
+        `https://clothpro.onrender.com/api/auth/update-upi/${user._id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ upiId: newUpi }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        localStorage.setItem("clothUser", JSON.stringify(data.user));
+        setUser(data.user);
+        alert("UPI Updated ✅");
+      } else {
+        alert(data.message || "UPI Update Failed ❌");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("UPI Update Failed ❌");
     }
   };
 
@@ -1555,6 +1706,24 @@ ${data.invoice?.invoiceNumber || ""}`);
                 />
                 <input
                   className="w-full bg-slate-900 p-4 rounded-2xl mb-6"
+                  placeholder="Customer Phone"
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                />
+                <input
+                  className="w-full bg-slate-900 p-4 rounded-2xl mb-6"
+                  placeholder="Customer Address"
+                  value={customerAddress}
+                  onChange={(e) => setCustomerAddress(e.target.value)}
+                />
+                <input
+                  className="w-full bg-slate-900 p-4 rounded-2xl mb-6"
+                  placeholder="Customer GSTIN (optional)"
+                  value={customerGST}
+                  onChange={(e) => setCustomerGST(e.target.value)}
+                />
+                <input
+                  className="w-full bg-slate-900 p-4 rounded-2xl mb-6"
                   placeholder="Discount Amount"
                   value={discount}
                   onChange={(e) => setDiscount(e.target.value)}
@@ -1655,18 +1824,18 @@ ${data.invoice?.invoiceNumber || ""}`);
                 <h2 className="text-3xl font-bold mb-8">{ui.billingTitle} Invoice</h2>
 
                 {category === "Restaurant" && (
-  <div className="mb-6 bg-orange-500/10 border border-orange-500/30 p-4 rounded-2xl">
-    <div className="flex justify-between text-lg mb-2">
-      <span>Order Type</span>
-      <span className="font-bold">{orderType}</span>
-    </div>
+                  <div className="mb-6 bg-orange-500/10 border border-orange-500/30 p-4 rounded-2xl">
+                    <div className="flex justify-between text-lg mb-2">
+                      <span>Order Type</span>
+                      <span className="font-bold">{orderType}</span>
+                    </div>
+                    <div className="flex justify-between text-lg">
+                      <span>Table</span>
+                      <span className="font-bold">{tableNumber || "-"}</span>
+                    </div>
+                  </div>
+                )}
 
-    <div className="flex justify-between text-lg">
-      <span>Table</span>
-      <span className="font-bold">{tableNumber || "-"}</span>
-    </div>
-  </div>
-)}
                 {!upiId && finalTotal > 0 && (
                   <div className="mb-6 bg-yellow-500/10 border border-yellow-500/30 p-5 rounded-3xl text-center">
                     <p className="text-yellow-300 font-bold text-lg">
@@ -1755,40 +1924,6 @@ ${data.invoice?.invoiceNumber || ""}`);
               </h3>
 
               <button
-              const updateUpiId = async () => {
-  try {
-    const response = await fetch(
-      `https://clothpro.onrender.com/api/auth/update-upi/${user._id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          upiId,
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (data.success) {
-      localStorage.setItem(
-        "clothUser",
-        JSON.stringify(data.user)
-      );
-
-      setUser(data.user);
-
-      alert("UPI Updated ✅");
-    } else {
-      alert(data.message);
-    }
-  } catch (error) {
-    console.log(error);
-    alert("UPI Update Failed ❌");
-  }
-};
                 onClick={updateUpiId}
                 className="bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-4 rounded-2xl text-xl font-bold"
               >
