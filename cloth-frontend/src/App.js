@@ -6,6 +6,7 @@ import CustomerKhata from "./CustomerKhata";
 import SupplierManagement from "./SupplierManagement";
 import StaffManagement from "./StaffManagement";
 import StaffLogin from "./StaffLogin";
+import BusinessSettings from "./BusinessSettings";
 
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
@@ -969,10 +970,13 @@ function App() {
             <table>
               <tr>
                 <td rowspan="3" style="width:50%;">
+                  ${user.logoUrl ? `<img src="${user.logoUrl}" style="max-width:120px;max-height:70px;margin-bottom:5px;" /><br/>` : ""}
                   <b>${user.shopName}</b><br/>
-                  ${category} Business<br/>
-                  GSTIN/UIN : ${user.gstin || "-"}<br/>
-                  State Name : Maharashtra, Code : 27<br/>
+                  ${user.businessAddress || "-"}<br/>
+                  Mobile : ${user.businessMobile || "-"}<br/>
+                  Email : ${user.businessEmail || "-"}<br/>
+                  GSTIN/UIN : ${user.gstNumber || "-"}<br/>
+                  State Name : ${user.businessState || "Maharashtra"}, Code : ${user.stateCode || "27"}<br/>
                   UPI ID : ${upiId || "-"}
                 </td>
                 <td>${isQuotation ? "Quotation No." : "Invoice No."}<br/><b>${invoiceNo}</b></td>
@@ -1056,13 +1060,27 @@ function App() {
             <table>
               <tr>
                 <td>
+                  <b>Bank Details</b><br/>
+                  Bank Name : ${user.bankName || "-"}<br/>
+                  A/C No : ${user.accountNumber || "-"}<br/>
+                  IFSC : ${user.ifscCode || "-"}<br/>
+                  UPI : ${upiId || "-"}
+                </td>
+              </tr>
+            </table>
+
+            <table>
+              <tr>
+                <td>
                   Tax Amount (in words) : <b>Indian Rupees ${Math.round(gst)} Only</b><br/><br/>
                   <b>${isQuotation ? "Note" : "Declaration"}</b><br/>
                   ${isQuotation ? "This is only a quotation / estimate. It is not a tax invoice and does not confirm sale or stock deduction." : "We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct."}
                 </td>
                 <td class="right" style="width:35%;">
                   for <b>${user.shopName}</b>
-                  <div class="stamp-box">SHOP STAMP</div>
+                  <div class="stamp-box">
+                    ${user.stampUrl ? `<img src="${user.stampUrl}" style="max-width:150px;max-height:65px;" />` : "SHOP STAMP"}
+                  </div>
                   Authorised Signatory
                 </td>
               </tr>
@@ -1944,27 +1962,7 @@ ${data.invoice?.invoiceNumber || ""}`);
         {activeMenu === "staff" && !user?.isStaff && <StaffManagement user={user} />}
 
         {activeMenu === "settings" && hasPermission("settings") && (
-          <div className="bg-white/5 rounded-3xl p-6 lg:p-8">
-            <h2 className="text-4xl font-bold mb-6">💳 Payment Settings</h2>
-
-            <div className="bg-slate-900 p-6 rounded-3xl max-w-xl">
-              <p className="text-slate-400 mb-2">Current UPI ID</p>
-              <h3 className="text-2xl font-bold mb-6">
-                {user?.upiId || "No UPI ID added"}
-              </h3>
-
-              <button
-                onClick={updateUpiId}
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-4 rounded-2xl text-xl font-bold"
-              >
-                Update UPI ID
-              </button>
-
-              <p className="text-slate-400 mt-6">
-                This UPI ID will be used automatically in billing QR code and printed invoice.
-              </p>
-            </div>
-          </div>
+          <BusinessSettings user={user} setUser={setUser} />
         )}
       </div>
     </div>

@@ -8,6 +8,24 @@ function Login({ setUser }) {
   const [businessCategory, setBusinessCategory] =
     useState("Clothing");
 
+  const [gstNumber, setGstNumber] = useState("");
+  const [businessAddress, setBusinessAddress] =
+    useState("");
+  const [businessState, setBusinessState] =
+    useState("Maharashtra");
+  const [stateCode, setStateCode] = useState("27");
+  const [businessMobile, setBusinessMobile] =
+    useState("");
+  const [businessEmail, setBusinessEmail] =
+    useState("");
+
+  const [logoUrl, setLogoUrl] = useState("");
+  const [stampUrl, setStampUrl] = useState("");
+
+  const [bankName, setBankName] = useState("");
+  const [accountNumber, setAccountNumber] =
+    useState("");
+  const [ifscCode, setIfscCode] = useState("");
   const [upiId, setUpiId] = useState("");
 
   const [email, setEmail] = useState("");
@@ -22,11 +40,11 @@ function Login({ setUser }) {
         return;
       }
 
-      if (!isLogin) {
-        if (!shopName || !ownerName) {
-          alert("Please fill all details");
-          return;
-        }
+      if (!isLogin && (!shopName || !ownerName)) {
+        alert(
+          "Shop name and owner name required"
+        );
+        return;
       }
 
       const url = isLogin
@@ -34,20 +52,28 @@ function Login({ setUser }) {
         : `${API_URL}/api/auth/register`;
 
       const bodyData = isLogin
-        ? {
-            email,
-            password,
-          }
+        ? { email, password }
         : {
             shopName,
             ownerName,
             businessCategory,
+            gstNumber,
+            businessAddress,
+            businessState,
+            stateCode,
+            businessMobile,
+            businessEmail,
+            logoUrl,
+            stampUrl,
+            bankName,
+            accountNumber,
+            ifscCode,
             upiId,
             email,
             password,
           };
 
-      const response = await fetch(url, {
+      const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +81,7 @@ function Login({ setUser }) {
         body: JSON.stringify(bodyData),
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
       if (!data.success) {
         alert(data.message);
@@ -81,89 +107,207 @@ function Login({ setUser }) {
     }
   };
 
+  const inputClass =
+    "w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none";
+
   return (
-    <div className="min-h-screen bg-black flex justify-center items-center p-6">
-      <div className="w-full max-w-md bg-slate-950 border border-slate-800 rounded-3xl p-8 shadow-2xl">
-        <h1 className="text-5xl font-bold text-white text-center mb-8">
-          🚀 {isLogin ? "Login" : "Create Business"}
+    <div className="min-h-screen bg-slate-950 flex justify-center items-center p-6">
+      <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl w-full max-w-3xl shadow-2xl">
+        <h1 className="text-white text-4xl font-bold mb-8 text-center">
+          {isLogin
+            ? "🚀 SmartBiz Login"
+            : "🚀 Create Business"}
         </h1>
 
         {!isLogin && (
           <>
-            <input
-              type="text"
-              placeholder="Business / Shop Name"
-              value={shopName}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                className={inputClass}
+                placeholder="Business / Shop Name"
+                value={shopName}
+                onChange={(e) =>
+                  setShopName(e.target.value)
+                }
+              />
+
+              <input
+                className={inputClass}
+                placeholder="Owner Name"
+                value={ownerName}
+                onChange={(e) =>
+                  setOwnerName(e.target.value)
+                }
+              />
+
+              <select
+                className={inputClass}
+                value={businessCategory}
+                onChange={(e) =>
+                  setBusinessCategory(
+                    e.target.value
+                  )
+                }
+              >
+                <option>Clothing</option>
+                <option>Grocery</option>
+                <option>Medical</option>
+                <option>Restaurant</option>
+                <option>Salon</option>
+                <option>Mobile Shop</option>
+                <option>Electronics</option>
+                <option>Hardware</option>
+                <option>Footwear</option>
+                <option>Cosmetics</option>
+                <option>General Store</option>
+                <option>Other</option>
+              </select>
+
+              <input
+                className={inputClass}
+                placeholder="GST Number"
+                value={gstNumber}
+                onChange={(e) =>
+                  setGstNumber(e.target.value)
+                }
+              />
+
+              <input
+                className={inputClass}
+                placeholder="Business Mobile"
+                value={businessMobile}
+                onChange={(e) =>
+                  setBusinessMobile(
+                    e.target.value
+                  )
+                }
+              />
+
+              <input
+                className={inputClass}
+                placeholder="Business Email"
+                value={businessEmail}
+                onChange={(e) =>
+                  setBusinessEmail(
+                    e.target.value
+                  )
+                }
+              />
+
+              <input
+                className={inputClass}
+                placeholder="Business State"
+                value={businessState}
+                onChange={(e) =>
+                  setBusinessState(
+                    e.target.value
+                  )
+                }
+              />
+
+              <input
+                className={inputClass}
+                placeholder="State Code"
+                value={stateCode}
+                onChange={(e) =>
+                  setStateCode(e.target.value)
+                }
+              />
+            </div>
+
+            <textarea
+              className="w-full p-4 rounded-2xl bg-slate-900 text-white mb-4 outline-none"
+              placeholder="Business Address"
+              value={businessAddress}
               onChange={(e) =>
-                setShopName(e.target.value)
+                setBusinessAddress(
+                  e.target.value
+                )
               }
-              className="w-full p-4 mb-4 rounded-2xl bg-slate-900 text-white outline-none"
             />
 
-            <input
-              type="text"
-              placeholder="Owner Name"
-              value={ownerName}
-              onChange={(e) =>
-                setOwnerName(e.target.value)
-              }
-              className="w-full p-4 mb-4 rounded-2xl bg-slate-900 text-white outline-none"
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                className={inputClass}
+                placeholder="Logo URL"
+                value={logoUrl}
+                onChange={(e) =>
+                  setLogoUrl(e.target.value)
+                }
+              />
 
-            <select
-              value={businessCategory}
-              onChange={(e) =>
-                setBusinessCategory(e.target.value)
-              }
-              className="w-full p-4 mb-4 rounded-2xl bg-slate-900 text-white outline-none"
-            >
-              <option>Clothing</option>
-              <option>Grocery</option>
-              <option>Medical</option>
-              <option>Restaurant</option>
-              <option>Salon</option>
-              <option>Electronics</option>
-              <option>Mobile Shop</option>
-              <option>Hardware</option>
-              <option>Footwear</option>
-              <option>General Store</option>
-            </select>
+              <input
+                className={inputClass}
+                placeholder="Stamp URL"
+                value={stampUrl}
+                onChange={(e) =>
+                  setStampUrl(e.target.value)
+                }
+              />
 
-            <input
-              type="text"
-              placeholder="UPI ID (example: swapnil@paytm)"
-              value={upiId}
-              onChange={(e) =>
-                setUpiId(e.target.value)
-              }
-              className="w-full p-4 mb-4 rounded-2xl bg-slate-900 text-white outline-none"
-            />
+              <input
+                className={inputClass}
+                placeholder="Bank Name"
+                value={bankName}
+                onChange={(e) =>
+                  setBankName(e.target.value)
+                }
+              />
+
+              <input
+                className={inputClass}
+                placeholder="Account Number"
+                value={accountNumber}
+                onChange={(e) =>
+                  setAccountNumber(
+                    e.target.value
+                  )
+                }
+              />
+
+              <input
+                className={inputClass}
+                placeholder="IFSC Code"
+                value={ifscCode}
+                onChange={(e) =>
+                  setIfscCode(e.target.value)
+                }
+              />
+
+              <input
+                className={inputClass}
+                placeholder="UPI ID"
+                value={upiId}
+                onChange={(e) =>
+                  setUpiId(e.target.value)
+                }
+              />
+            </div>
           </>
         )}
 
         <input
-          type="email"
+          className={inputClass}
           placeholder="Email"
           value={email}
           onChange={(e) =>
             setEmail(e.target.value)
           }
-          className="w-full p-4 mb-4 rounded-2xl bg-slate-900 text-white outline-none"
         />
 
         <input
           type="password"
+          className={inputClass}
           placeholder="Password"
           value={password}
           onChange={(e) =>
             setPassword(e.target.value)
           }
-          className="w-full p-4 mb-6 rounded-2xl bg-slate-900 text-white outline-none"
         />
 
         <button
           onClick={submitHandler}
-          className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-4 rounded-2xl text-2xl font-bold"
+          className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 p-4 rounded-2xl text-white text-xl font-bold"
         >
           {isLogin
             ? "Login"
@@ -171,8 +315,8 @@ function Login({ setUser }) {
         </button>
 
         <p
-          className="text-center text-slate-400 mt-6 cursor-pointer"
           onClick={() => setIsLogin(!isLogin)}
+          className="text-center text-slate-400 mt-6 cursor-pointer hover:text-white transition"
         >
           {isLogin
             ? "Create New Business"

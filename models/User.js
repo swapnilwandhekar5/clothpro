@@ -28,20 +28,70 @@ const userSchema = new mongoose.Schema(
       default: "Clothing",
     },
 
+    gstNumber: {
+      type: String,
+      default: "",
+    },
+
+    businessAddress: {
+      type: String,
+      default: "",
+    },
+
+    businessState: {
+      type: String,
+      default: "Maharashtra",
+    },
+
+    stateCode: {
+      type: String,
+      default: "27",
+    },
+
+    businessMobile: {
+      type: String,
+      default: "",
+    },
+
+    businessEmail: {
+      type: String,
+      default: "",
+    },
+
+    logoUrl: {
+      type: String,
+      default: "",
+    },
+
+    stampUrl: {
+      type: String,
+      default: "",
+    },
+
+    bankName: {
+      type: String,
+      default: "",
+    },
+
+    accountNumber: {
+      type: String,
+      default: "",
+    },
+
+    ifscCode: {
+      type: String,
+      default: "",
+    },
+
     upiId: {
       type: String,
-      default: "swapnil@paytm",
+      default: "",
     },
 
     shopId: {
       type: String,
       default: () =>
         "SHOP" + Math.floor(Math.random() * 1000000),
-    },
-
-    createdAt: {
-      type: Date,
-      default: Date.now,
     },
   },
   {

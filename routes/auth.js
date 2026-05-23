@@ -14,6 +14,17 @@ router.post("/register", async (req, res) => {
       email,
       password,
       businessCategory,
+      gstNumber,
+      businessAddress,
+      businessState,
+      stateCode,
+      businessMobile,
+      businessEmail,
+      logoUrl,
+      stampUrl,
+      bankName,
+      accountNumber,
+      ifscCode,
       upiId,
     } = req.body;
 
@@ -34,13 +45,22 @@ router.post("/register", async (req, res) => {
       email,
       password: hashedPassword,
       businessCategory,
-      upiId: upiId || "swapnil@paytm",
+      gstNumber,
+      businessAddress,
+      businessState,
+      stateCode,
+      businessMobile,
+      businessEmail,
+      logoUrl,
+      stampUrl,
+      bankName,
+      accountNumber,
+      ifscCode,
+      upiId,
     });
 
     const token = jwt.sign(
-      {
-        id: user._id,
-      },
+      { id: user._id },
       "smartbizsecret",
       {
         expiresIn: "30d",
@@ -89,9 +109,7 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      {
-        id: user._id,
-      },
+      { id: user._id },
       "smartbizsecret",
       {
         expiresIn: "30d",
@@ -114,18 +132,71 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.put("/update-business/:id", async (req, res) => {
+  try {
+    const {
+      shopName,
+      ownerName,
+      businessCategory,
+      gstNumber,
+      businessAddress,
+      businessState,
+      stateCode,
+      businessMobile,
+      businessEmail,
+      logoUrl,
+      stampUrl,
+      bankName,
+      accountNumber,
+      ifscCode,
+      upiId,
+    } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        shopName,
+        ownerName,
+        businessCategory,
+        gstNumber,
+        businessAddress,
+        businessState,
+        stateCode,
+        businessMobile,
+        businessEmail,
+        logoUrl,
+        stampUrl,
+        bankName,
+        accountNumber,
+        ifscCode,
+        upiId,
+      },
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      message: "Business Details Updated ✅",
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.json({
+      success: false,
+      message: "Business Update Failed ❌",
+    });
+  }
+});
+
 router.put("/update-upi/:id", async (req, res) => {
   try {
     const { upiId } = req.body;
 
     const user = await User.findByIdAndUpdate(
       req.params.id,
-      {
-        upiId,
-      },
-      {
-        new: true,
-      }
+      { upiId },
+      { new: true }
     );
 
     res.json({
