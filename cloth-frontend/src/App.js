@@ -1219,6 +1219,10 @@ Powered By SmartBiz OS
         price: Number(item.price),
         costPrice: Number(item.costPrice || 0),
         quantity: Number(item.qty),
+        total: Number(item.price) * Number(item.qty),
+        profit:
+          (Number(item.price) - Number(item.costPrice || 0)) *
+          Number(item.qty),
         unit: item.unit || "pcs",
         unitValue: item.unitValue || 1,
       }));
@@ -1245,6 +1249,19 @@ Powered By SmartBiz OS
           gst,
           discount: discountAmount,
           finalTotal,
+          total: finalTotal,
+          quantity: cart.reduce(
+            (a, b) => a + Number(b.qty),
+            0
+          ),
+          productName: cart.map((i) => i.name).join(", "),
+          profit: cart.reduce(
+            (a, b) =>
+              a +
+              (Number(b.price) - Number(b.costPrice || 0)) *
+                Number(b.qty),
+            0
+          ),
 
           paymentMode: upiId ? "UPI/Cash" : "Cash",
           paymentStatus: "Paid",
