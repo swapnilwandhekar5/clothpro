@@ -300,6 +300,7 @@ function App() {
   const [quantity, setQuantity] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [barcode, setBarcode] = useState("");
+  const [hsnCode, setHsnCode] = useState("");
 
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
@@ -464,6 +465,7 @@ function App() {
     if (item.size) details.push(`Size: ${item.size}`);
     if (item.color) details.push(`Color: ${item.color}`);
     if (item.brand) details.push(`Brand: ${item.brand}`);
+    if (item.hsnCode || item.hsn) details.push(`HSN: ${item.hsnCode || item.hsn}`);
     if (item.mrp) details.push(`MRP: Rs ${item.mrp}`);
     if (item.expiryDate) details.push(`Exp: ${item.expiryDate}`);
     if (item.manufacturingDate) details.push(`MFG: ${item.manufacturingDate}`);
@@ -617,6 +619,8 @@ function App() {
         quantity,
         imageUrl,
         barcode,
+        hsnCode,
+        hsn: hsnCode,
         businessCategory: category,
 
         size,
@@ -652,6 +656,7 @@ function App() {
     setQuantity("");
     setImageUrl("");
     setBarcode("");
+    setHsnCode("");
     setSize("");
     setColor("");
     setBrand("");
@@ -901,7 +906,7 @@ function App() {
         (item, index) => `
         <tr>
           <td>${index + 1}</td>
-          <td>
+          <td class="desc-cell">
             <b>${item.name}</b><br/>
             ${item.size ? "Size: " + item.size + "<br/>" : ""}
             ${item.color ? "Color: " + item.color + "<br/>" : ""}
@@ -912,7 +917,7 @@ function App() {
             ${item.batchNo ? "Batch: " + item.batchNo + "<br/>" : ""}
             ${item.expiryDate ? "Exp: " + item.expiryDate : ""}
           </td>
-          <td>${item.hsn || "0000"}</td>
+          <td>${item.hsnCode || item.hsn || "0000"}</td>
           <td><b>${item.qty} ${item.unit || "Nos"}</b></td>
           <td>${Number(item.price).toFixed(2)}</td>
           <td>${item.unit || "Nos"}</td>
@@ -933,16 +938,19 @@ function App() {
         <head>
           <title>${isQuotation ? "Quotation" : "Tax Invoice"}</title>
           <style>
-            body { font-family: Arial, sans-serif; padding: 25px; color: #000; }
+            body { font-family: Arial, sans-serif; padding: 12px; color: #000; }
             .invoice { width: 900px; margin: auto; }
             .center { text-align: center; }
-            table { width: 100%; border-collapse: collapse; }
-            td, th { border: 1px solid #000; padding: 6px; font-size: 14px; vertical-align: top; }
+            table { width: 100%; border-collapse: collapse; page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            td, th { border: 1px solid #000; padding: 4px; font-size: 11px; vertical-align: top; }
+            .items-table td, .items-table th { padding: 3px; font-size: 10.5px; line-height: 1.2; }
+            .desc-cell { max-height: 42px; overflow: hidden; }
             .no-border td { border: none; }
-            .title { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+            .title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
             .bold { font-weight: bold; }
             .right { text-align: right; }
-            .big { font-size: 22px; font-weight: bold; }
+            .big { font-size: 17px; font-weight: bold; }
             .footer { text-align: center; margin-top: 10px; }
             .stamp-box { height: 70px; border: 1px dashed #000; margin-top: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; }
             @media print { body { padding: 0; } .invoice { width: 100%; } }
@@ -1016,7 +1024,7 @@ function App() {
               </tr>
             </table>
 
-            <table>
+            <table class="items-table">
               <thead>
                 <tr>
                   <th>Sl No.</th>
@@ -1216,6 +1224,8 @@ Powered By SmartBiz OS
         productId: item._id,
         productName: item.name,
         barcode: item.barcode,
+        hsnCode: item.hsnCode || item.hsn || "0000",
+        hsn: item.hsnCode || item.hsn || "0000",
         price: Number(item.price),
         costPrice: Number(item.costPrice || 0),
         quantity: Number(item.qty),
@@ -1502,6 +1512,12 @@ ${data.invoice?.invoiceNumber || ""}`);
                   placeholder={`${ui.barcodeName} (optional)`}
                   value={barcode}
                   onChange={(e) => setBarcode(e.target.value)}
+                />
+                <input
+                  className="bg-slate-900 p-4 rounded-2xl"
+                  placeholder="HSN / SAC Code"
+                  value={hsnCode}
+                  onChange={(e) => setHsnCode(e.target.value)}
                 />
 
                 {renderCategoryFields()}
