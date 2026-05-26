@@ -1,120 +1,69 @@
+// backend/routes/staff.js
+
 const express = require("express");
+
 const router = express.Router();
 
 const Staff = require("../models/Staff");
 
-router.post("/add", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const {
       shopId,
       shopName,
-      ownerId,
-
       name,
+      mobile,
       email,
       password,
-      phone,
-
       role,
-      salary,
-      joiningDate,
     } = req.body;
 
-    const existingStaff = await Staff.findOne({ email });
-
-    if (existingStaff) {
+    if (
+      !shopId ||
+      !name ||
+      !mobile ||
+      !email ||
+      !password
+    ) {
       return res.json({
         success: false,
-        message: "Email already exists",
+        message: "Fill all fields ❌",
       });
     }
 
-    let permissions = {
-      dashboard: false,
-      inventory: false,
-      billing: true,
-      analytics: false,
-      khata: false,
-      supplier: false,
-      settings: false,
-    };
-
-    if (role === "Admin") {
-      permissions = {
-        dashboard: true,
-        inventory: true,
-        billing: true,
-        analytics: true,
-        khata: true,
-        supplier: true,
-        settings: true,
-      };
-    }
-
-    if (role === "Manager") {
-      permissions = {
-        dashboard: true,
-        inventory: true,
-        billing: true,
-        analytics: true,
-        khata: true,
-        supplier: true,
-        settings: false,
-      };
-    }
-
-    if (role === "Inventory Staff") {
-      permissions = {
-        dashboard: true,
-        inventory: true,
-        billing: false,
-        analytics: false,
-        khata: false,
-        supplier: true,
-        settings: false,
-      };
-    }
-
-    if (role === "Cashier") {
-      permissions = {
-        dashboard: true,
-        inventory: false,
-        billing: true,
-        analytics: false,
-        khata: false,
-        supplier: false,
-        settings: false,
-      };
-    }
-
-    const staff = new Staff({
-      shopId,
-      shopName,
-      ownerId,
-
-      name,
+    const existing = await Staff.findOne({
       email,
-      password,
-      phone,
-
-      role,
-      permissions,
-
-      salary,
-      joiningDate,
     });
 
-    await staff.save();
+    if (existing) {
+      return res.json({
+        success: false,
+        message: "Staff already exists ❌",
+      });
+    }
 
-    res.json({
+    const staff = await Staff.create({
+      shopId,
+      shopName,
+      name,
+      mobile,
+      email,
+      password,
+      role,
+      status: "Pending",
+    });
+
+    return res.json({
       success: true,
-      message: "Staff Added Successfully ✅",
+      message: "Registration Submitted ✅",
       staff,
     });
   } catch (error) {
-    res.json({
+    console.log(error);
+
+    return res.json({
       success: false,
-      message: error.message,
+      message: "Registration Error ❌",
     });
   }
 });
@@ -131,26 +80,32 @@ router.post("/login", async (req, res) => {
     if (!staff) {
       return res.json({
         success: false,
-        message: "Invalid Credentials",
+        message: "Invalid Credentials ❌",
       });
     }
 
-    if (!staff.isActive) {
+    if (staff.status !== "Approved") {
       return res.json({
         success: false,
-        message: "Staff account blocked",
+        message:
+          "Account pending for owner approval ⏳",
       });
     }
 
-    res.json({
+    return res.json({
       success: true,
-      message: "Staff Login Success ✅",
-      staff,
+      message: "Login Success ✅",
+      user: {
+        ...staff._doc,
+        isStaff: true,
+      },
     });
   } catch (error) {
-    res.json({
+    console.log(error);
+
+    return res.json({
       success: false,
-      message: error.message,
+      message: "Login Error ❌",
     });
   }
 });
@@ -163,34 +118,32 @@ router.get("/all/:shopId", async (req, res) => {
 
     res.json(staff);
   } catch (error) {
+    console.log(error);
     res.json([]);
   }
 });
 
-router.put("/toggle/:id", async (req, res) => {
+router.put("/approve/:id", async (req, res) => {
   try {
-    const staff = await Staff.findById(req.params.id);
-
-    if (!staff) {
-      return res.json({
-        success: false,
-        message: "Staff not found",
-      });
-    }
-
-    staff.isActive = !staff.isActive;
-
-    await staff.save();
+    const staff = await Staff.findByIdAndUpdate(
+      req.params.id,
+      {
+        status: "Approved",
+      },
+      { new: true }
+    );
 
     res.json({
       success: true,
-      message: "Staff Status Updated ✅",
+      message: "Staff Approved ✅",
       staff,
     });
   } catch (error) {
+    console.log(error);
+
     res.json({
       success: false,
-      message: error.message,
+      message: "Approve Error ❌",
     });
   }
 });
@@ -204,9 +157,11 @@ router.delete("/delete/:id", async (req, res) => {
       message: "Staff Deleted ✅",
     });
   } catch (error) {
+    console.log(error);
+
     res.json({
       success: false,
-      message: error.message,
+      message: "Delete Error ❌",
     });
   }
 });

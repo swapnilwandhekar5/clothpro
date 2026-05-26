@@ -1,83 +1,61 @@
+// backend/models/Staff.js
+
 const mongoose = require("mongoose");
 
-const staffSchema = new mongoose.Schema({
-  shopId: String,
-  shopName: String,
+const staffSchema = new mongoose.Schema(
+  {
+    shopId: String,
+    shopName: String,
 
-  ownerId: String,
+    name: String,
+    mobile: String,
+    email: String,
+    password: String,
 
-  name: String,
-
-  email: {
-    type: String,
-    unique: true,
-  },
-
-  password: String,
-
-  phone: String,
-
-  role: {
-    type: String,
-    default: "Cashier",
-  },
-
-  permissions: {
-    dashboard: {
-      type: Boolean,
-      default: false,
+    role: {
+      type: String,
+      default: "Staff",
     },
 
-    inventory: {
-      type: Boolean,
-      default: false,
+    status: {
+      type: String,
+      default: "Pending",
     },
 
-    billing: {
-      type: Boolean,
-      default: true,
-    },
-
-    analytics: {
-      type: Boolean,
-      default: false,
-    },
-
-    khata: {
-      type: Boolean,
-      default: false,
-    },
-
-    supplier: {
-      type: Boolean,
-      default: false,
-    },
-
-    settings: {
-      type: Boolean,
-      default: false,
+    permissions: {
+      dashboard: {
+        type: Boolean,
+        default: true,
+      },
+      inventory: {
+        type: Boolean,
+        default: true,
+      },
+      billing: {
+        type: Boolean,
+        default: true,
+      },
+      analytics: {
+        type: Boolean,
+        default: false,
+      },
+      khata: {
+        type: Boolean,
+        default: false,
+      },
+      supplier: {
+        type: Boolean,
+        default: false,
+      },
+      settings: {
+        type: Boolean,
+        default: false,
+      },
     },
   },
+  { timestamps: true }
+);
 
-  salary: {
-    type: Number,
-    default: 0,
-  },
-
-  joiningDate: {
-    type: String,
-    default: "",
-  },
-
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-module.exports = mongoose.model("Staff", staffSchema);
+module.exports =
+  mongoose.models.Staff ||
+  mongoose.model("Staff", staffSchema);
