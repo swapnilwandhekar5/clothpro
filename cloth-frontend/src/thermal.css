@@ -1,1 +1,129 @@
-a
+body{
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f5f5f5;
+}
+
+.thermal-container{
+    width:80mm;
+    margin:auto;
+    background:#fff;
+    color:#000;
+    padding:8px;
+    box-sizing:border-box;
+}
+
+.shop-logo{
+    width:60px;
+    height:60px;
+    object-fit:contain;
+    display:block;
+    margin:0 auto 5px;
+}
+
+.shop-title{
+    font-size:18px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.shop-address{
+    text-align:center;
+    font-size:11px;
+    margin-top:3px;
+}
+
+.shop-mobile{
+    text-align:center;
+    font-size:11px;
+}
+
+.line{
+    border-top:1px dashed #000;
+    margin:6px 0;
+}
+
+.info-table{
+    width:100%;
+    font-size:11px;
+    border-collapse:collapse;
+}
+
+.info-table td{
+    padding:2px 0;
+}
+
+.bill-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:11px;
+}
+
+.bill-table th{
+    border-top:1px dashed #000;
+    border-bottom:1px dashed #000;
+    padding:4px 0;
+}
+
+.bill-table td{
+    padding:3px 0;
+}
+
+.right{
+    text-align:right;
+}
+
+.center{
+    text-align:center;
+}
+
+.total-table{
+    width:100%;
+    font-size:12px;
+    margin-top:5px;
+}
+
+.total-table td{
+    padding:2px 0;
+}
+
+.grand-total{
+    font-size:15px;
+    font-weight:bold;
+}
+
+.footer{
+    text-align:center;
+    font-size:11px;
+    margin-top:8px;
+}
+
+.policy{
+    text-align:center;
+    font-size:10px;
+    margin-top:8px;
+}
+
+@media print{
+
+    body{
+        background:#fff;
+    }
+
+    .no-print{
+        display:none;
+    }
+
+    .thermal-container{
+        width:80mm;
+        margin:0;
+        padding:5px;
+    }
+
+    @page{
+        size:80mm auto;
+        margin:2mm;
+    }
+
+}
