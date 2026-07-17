@@ -1125,31 +1125,48 @@ Visit Again
     const win = window.open("", "", "width=1000,height=900");
 
     win.document.write(`
-      <html>
-        <head>
-          <title>${isQuotation ? "Quotation" : "Tax Invoice"}</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 12px; color: #000; }
-            .invoice { width: 900px; margin: auto; }
-            .center { text-align: center; }
-            table { width: 100%; border-collapse: collapse; page-break-inside: auto; }
-            tr { page-break-inside: avoid; page-break-after: auto; }
-            td, th { border: 1px solid #000; padding: 4px; font-size: 11px; vertical-align: top; }
-            .items-table td, .items-table th { padding: 3px; font-size: 10.5px; line-height: 1.2; }
-            .desc-cell { max-height: 42px; overflow: hidden; }
-            .no-border td { border: none; }
-            .title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-            .bold { font-weight: bold; }
-            .right { text-align: right; }
-            .big { font-size: 17px; font-weight: bold; }
-            .footer { text-align: center; margin-top: 10px; }
-            .stamp-box { height: 70px; border: 1px dashed #000; margin-top: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; }
-            @media print { body { padding: 0; } .invoice { width: 100%; } }
-          </style>
-        </head>
+<html>
+<head>
+<title>${isQuotation ? "Quotation" : "Thermal Bill"}</title>
 
-        <body>
-          <div class="invoice">
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:monospace;
+}
+
+body{
+width:80mm;
+padding:8px;
+color:#000;
+background:#fff;
+font-size:12px;
+}
+
+.bill{
+width:100%;
+}
+
+.center{
+text-align:center;
+}
+
+.bold{
+font-weight:bold;
+}
+
+hr{
+border:none;
+border-top:1px dashed #000;
+margin:6px 0;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
             <div class="center title">${isQuotation ? "Quotation" : "Tax Invoice"}</div>
 
             <table class="no-border">
