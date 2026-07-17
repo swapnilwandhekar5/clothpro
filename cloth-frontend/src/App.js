@@ -2175,6 +2175,30 @@ ${data.invoice?.invoiceNumber || ""}`);
                     Print Quotation
                   </button>
                 )}
+<button
+  onClick={() =>
+    printThermalBill({
+      user,
+      cart,
+      customerName,
+      customerPhone,
+      customerAddress,
+      customerGST,
+      subtotal,
+      gst,
+      discountAmount,
+      finalTotal,
+      qrImage,
+      upiId,
+      orderType,
+      tableNumber,
+      category,
+    })
+  }
+  className="w-full mt-4 bg-yellow-500 hover:bg-yellow-600 p-4 rounded-2xl text-xl font-bold"
+>
+  🖨️ Print Thermal Bill
+</button>
 
                 <button
                   onClick={saveSale}
