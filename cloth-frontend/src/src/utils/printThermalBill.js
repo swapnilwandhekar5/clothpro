@@ -1,58 +1,66 @@
 export const printThermalBill = (data) => {
+  const {
+    user,
+    cart,
+    customerName,
+    customerPhone,
+    customerAddress,
+    customerGST,
+    subtotal,
+    gst,
+    discountAmount,
+    finalTotal,
+    qrImage,
+    upiId,
+    orderType,
+    tableNumber,
+    category,
+  } = data;
 
-const {
-  user,
-  cart,
-  customerName,
-  customerPhone,
-  customerAddress,
-  customerGST,
-  subtotal,
-  gst,
-  discountAmount,
-  finalTotal,
-  qrImage,
-  upiId,
-  orderType,
-  tableNumber,
-  category,
-} = data;
+  const win = window.open("", "", "width=320,height=900");
 
-const win = window.open("", "", "width=320,height=900");
-
-const items = cart.map((item,index)=>`
+  const items = cart
+    .map(
+      (item, index) => `
 <tr>
-<td>${index+1}</td>
+<td>${index + 1}</td>
 <td>${item.name}</td>
 <td>${item.qty}</td>
-<td>₹${item.price}</td>
-<td>₹${(item.qty*item.price).toFixed(2)}</td>
+<td>₹${Number(item.price).toFixed(2)}</td>
+<td class="right">₹${(
+        Number(item.qty) * Number(item.price)
+      ).toFixed(2)}</td>
 </tr>
-`).join("");
+`
+    )
+    .join("");
 
-win.document.write(`
+  win.document.write(`
+<!DOCTYPE html>
+
 <html>
 
 <head>
+
+<meta charset="UTF-8">
 
 <title>Thermal Bill</title>
 
 <style>
 
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
 width:80mm;
 font-family:monospace;
-padding:8px;
 font-size:12px;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-td{
-padding:3px 0;
+padding:8px;
+color:#000;
+background:#fff;
 }
 
 .center{
@@ -63,21 +71,65 @@ text-align:center;
 text-align:right;
 }
 
+.bold{
+font-weight:bold;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:4px;
+}
+
+th,
+td{
+padding:3px 0;
+font-size:12px;
+}
+
 hr{
 border:none;
 border-top:1px dashed #000;
 margin:6px 0;
 }
 
+.logo{
+width:70px;
+height:70px;
+object-fit:contain;
+margin:auto;
+display:block;
+}
+
+.big{
+font-size:16px;
+font-weight:bold;
+}
+
+.small{
+font-size:10px;
+}
+
+.total{
+font-size:16px;
+font-weight:bold;
+}
+
 </style>
 
+</head>
+
 <body>
-`);
+
 <div class="center">
 
-${user.logoUrl ? `<img src="${user.logoUrl}" style="width:70px;height:70px;"><br>` : ""}
+${
+  user.logoUrl
+    ? `<img src="${user.logoUrl}" class="logo">`
+    : ""
+}
 
-<h2>${user.shopName}</h2>
+<div class="big">${user.shopName}</div>
 
 <div>${user.businessAddress || ""}</div>
 
@@ -93,11 +145,12 @@ ${user.logoUrl ? `<img src="${user.logoUrl}" style="width:70px;height:70px;"><br
 
 <div><b>Phone :</b> ${customerPhone || "-"}</div>
 
+<div><b>Address :</b> ${customerAddress || "-"}</div>
+
 <div><b>GST :</b> ${customerGST || "-"}</div>
 
 <div><b>Date :</b> ${new Date().toLocaleString()}</div>
-
-${category==="Restaurant" ? `
+${category === "Restaurant" ? `
 <div><b>Order :</b> ${orderType}</div>
 <div><b>Table :</b> ${tableNumber || "-"}</div>
 ` : ""}
@@ -107,11 +160,17 @@ ${category==="Restaurant" ? `
 <table>
 
 <tr>
+
 <th>#</th>
+
 <th>Item</th>
+
 <th>Qty</th>
+
 <th>Rate</th>
+
 <th>Total</th>
+
 </tr>
 
 ${items}
@@ -119,7 +178,6 @@ ${items}
 </table>
 
 <hr>
-<div style="margin-top:8px;">
 
 <table>
 
@@ -129,7 +187,7 @@ ${items}
 </tr>
 
 <tr>
-<td>GST</td>
+<td>GST (18%)</td>
 <td class="right">₹${gst.toFixed(2)}</td>
 </tr>
 
@@ -139,40 +197,80 @@ ${items}
 </tr>
 
 <tr>
-<td><b>Grand Total</b></td>
-<td class="right"><b>₹${finalTotal.toFixed(2)}</b></td>
+
+<td class="total">Grand Total</td>
+
+<td class="right total">
+₹${finalTotal.toFixed(2)}
+</td>
+
 </tr>
 
 </table>
 
-</div>
-
 <hr>
 
-${qrImage ? `
 <div class="center">
-<img src="${qrImage}" style="width:150px;height:150px;">
-<div>Scan & Pay</div>
-<div>${upiId || ""}</div>
+
+<b>Payment</b>
+
 </div>
+${qrImage ? `
 <hr>
+
+<div class="center">
+
+<img
+src="${qrImage}"
+style="width:140px;height:140px;"
+/>
+
+<div style="margin-top:5px;font-weight:bold;">
+Scan & Pay
+</div>
+
+<div>
+${upiId || ""}
+</div>
+
+</div>
+
 ` : ""}
 
+<hr>
+
 <div class="center">
 
-<b>Thank You 🙏</b><br>
+<div class="big">
+THANK YOU 🙏
+</div>
 
+<div>
 Visit Again
+</div>
+
+<br>
+
+<div class="small">
+Powered By SmartBiz OS
+</div>
 
 </div>
 
 </body>
 
 </html>
+
 `);
 
 win.document.close();
 
+win.focus();
+
 win.print();
 
-}
+setTimeout(() => {
+  win.close();
+}, 500);
+
+};
