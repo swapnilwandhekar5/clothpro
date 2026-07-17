@@ -896,6 +896,197 @@ function App() {
     doc.save(`${category}-sales-report.pdf`);
   };
 
+const printThermalBill = () => {
+  if (cart.length === 0) {
+    alert("Cart empty ❌");
+    return;
+  }
+
+  const billNo = "INV-" + Date.now();
+
+  const items = cart
+    .map(
+      (item) => `
+<tr>
+<td>${item.name}${item.size ? " (" + item.size + ")" : ""}</td>
+<td align="center">${item.qty}</td>
+<td align="right">${(item.price * item.qty).toFixed(2)}</td>
+</tr>
+`
+    )
+    .join("");
+
+  const win = window.open("", "", "width=320,height=900");
+
+  win.document.write(`
+<html>
+
+<head>
+
+<title>Thermal Bill</title>
+
+<style>
+
+body{
+width:58mm;
+font-family:monospace;
+font-size:12px;
+padding:5px;
+margin:0;
+}
+
+.center{
+text-align:center;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+td{
+padding:2px 0;
+font-size:12px;
+}
+
+.line{
+border-top:1px dashed black;
+margin:4px 0;
+}
+
+.total{
+font-size:16px;
+font-weight:bold;
+}
+
+img{
+display:block;
+margin:auto;
+}
+
+@media print{
+
+body{
+width:58mm;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="center">
+
+<h3>${user.shopName}</h3>
+
+${user.businessAddress || ""}<br>
+
+${user.businessMobile || ""}<br>
+
+GST : ${user.gstNumber || "-"}<br>
+
+</div>
+
+<div class="line"></div>
+
+Bill : ${billNo}<br>
+
+Date : ${new Date().toLocaleDateString()}<br>
+
+Time : ${new Date().toLocaleTimeString()}<br>
+
+Customer : ${customerName || "Walk-in"}<br>
+
+<div class="line"></div>
+
+<table>
+
+<tr>
+
+<td><b>Item</b></td>
+
+<td align="center"><b>Qty</b></td>
+
+<td align="right"><b>Amt</b></td>
+
+</tr>
+
+${items}
+
+</table>
+
+<div class="line"></div>
+
+<table>
+
+<tr>
+
+<td>Subtotal</td>
+
+<td align="right">₹${subtotal.toFixed(2)}</td>
+
+</tr>
+
+<tr>
+
+<td>GST</td>
+
+<td align="right">₹${gst.toFixed(2)}</td>
+
+</tr>
+
+<tr>
+
+<td>Discount</td>
+
+<td align="right">₹${discountAmount.toFixed(2)}</td>
+
+</tr>
+
+<tr>
+
+<td class="total">TOTAL</td>
+
+<td class="total" align="right">₹${finalTotal.toFixed(2)}</td>
+
+</tr>
+
+</table>
+
+<div class="line"></div>
+
+${
+  qrImage
+    ? `<img src="${qrImage}" width="140" height="140"/>`
+    : ""
+}
+
+<div class="center">
+
+UPI : ${upiId || ""}
+
+<br><br>
+
+<b>Thank You</b>
+
+<br>
+
+Visit Again
+
+</div>
+
+</body>
+
+</html>
+`);
+
+  win.document.close();
+
+  win.print();
+};
   const printTallyDocument = (documentType = "Invoice") => {
     const isQuotation = documentType === "Quotation";
     const invoiceNo =
