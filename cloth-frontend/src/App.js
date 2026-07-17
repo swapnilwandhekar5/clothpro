@@ -1477,8 +1477,8 @@ Powered By SmartBiz OS
         return;
       }
 
-      printInvoice();
-
+     
+printThermalBill();
       setCart([]);
       setCustomerName("");
       setCustomerPhone("");
