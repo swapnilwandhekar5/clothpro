@@ -1496,7 +1496,23 @@ Powered By SmartBiz OS
       }
 
      
-printThermalBill();
+printThermalBill({
+  user,
+  cart,
+  customerName,
+  customerPhone,
+  customerAddress,
+  customerGST,
+  subtotal,
+  gst,
+  discountAmount,
+  finalTotal,
+  qrImage,
+  upiId,
+  orderType,
+  tableNumber,
+  category,
+});
       setCart([]);
       setCustomerName("");
       setCustomerPhone("");
