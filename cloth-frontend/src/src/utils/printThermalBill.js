@@ -119,3 +119,60 @@ ${items}
 </table>
 
 <hr>
+<div style="margin-top:8px;">
+
+<table>
+
+<tr>
+<td>Subtotal</td>
+<td class="right">₹${subtotal.toFixed(2)}</td>
+</tr>
+
+<tr>
+<td>GST</td>
+<td class="right">₹${gst.toFixed(2)}</td>
+</tr>
+
+<tr>
+<td>Discount</td>
+<td class="right">-₹${discountAmount.toFixed(2)}</td>
+</tr>
+
+<tr>
+<td><b>Grand Total</b></td>
+<td class="right"><b>₹${finalTotal.toFixed(2)}</b></td>
+</tr>
+
+</table>
+
+</div>
+
+<hr>
+
+${qrImage ? `
+<div class="center">
+<img src="${qrImage}" style="width:150px;height:150px;">
+<div>Scan & Pay</div>
+<div>${upiId || ""}</div>
+</div>
+<hr>
+` : ""}
+
+<div class="center">
+
+<b>Thank You 🙏</b><br>
+
+Visit Again
+
+</div>
+
+</body>
+
+</html>
+`);
+
+win.document.close();
+
+win.print();
+
+}
