@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import QRCode from "qrcode";
 import Login from "./Login";
 import AdminPanel from "./AdminPanel";
