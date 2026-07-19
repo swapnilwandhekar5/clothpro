@@ -2023,13 +2023,28 @@ ${data.invoice?.invoiceNumber || ""}`);
                   }
                 }}
               />
-              <button
-                onClick={addByBarcode}
-                className="bg-green-500 px-6 py-4 rounded-2xl font-bold"
-              >
-                <FaBarcode className="inline mr-2" />
-                Add
-              </button>
+             <div className="flex gap-3">
+  <button
+    onClick={addByBarcode}
+    className="bg-green-500 px-6 py-4 rounded-2xl font-bold"
+  >
+    <FaBarcode className="inline mr-2" />
+    Add
+  </button>
+
+  <button
+    onClick={() => setShowScanner(true)}
+    className="bg-blue-500 px-6 py-4 rounded-2xl font-bold"
+  >
+    📷 Camera
+  </button>
+</div>
+
+{showScanner && (
+  <div className="mt-4 bg-black p-4 rounded-2xl">
+    <div id="reader"></div>
+  </div>
+)}
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
