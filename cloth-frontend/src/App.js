@@ -28,7 +28,9 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 
-import { motion } from "framer-motion";
+import { motion } from
+import { Html5QrcodeScanner } from "html5-qrcode";
+ "framer-motion";
 
 import {
   BarChart,
