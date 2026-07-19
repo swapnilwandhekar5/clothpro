@@ -338,6 +338,8 @@ function App() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
   const [analyticsRange, setAnalyticsRange] = useState("daily");
   const [qrImage, setQrImage] = useState("");
+const [showScanner, setShowScanner] = useState(false);
+const scannerRef = useRef(null);
 
   const upiId = user?.upiId || "";
   const category = user?.businessCategory || "Clothing";
