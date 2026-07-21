@@ -2013,20 +2013,40 @@ ${data.invoice?.invoiceNumber || ""}`);
               {ui.billingTitle}
             </h1>
 
-            <div className="bg-slate-900 p-5 rounded-3xl mb-8 flex flex-col lg:flex-row gap-4">
-              <input
-                className="flex-1 bg-slate-800 p-4 rounded-2xl"
-                placeholder={ui.scanPlaceholder}
-                value={barcodeSearch}
-                onChange={(e) => setBarcodeSearch(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    addByBarcode();
-                  }
-                }}
-              />
-            
-            </div>
+           <div className="bg-slate-900 p-5 rounded-3xl mb-8 flex flex-col lg:flex-row gap-4">
+  <input
+    className="flex-1 bg-slate-800 p-4 rounded-2xl"
+    placeholder={ui.scanPlaceholder}
+    value={barcodeSearch}
+    onChange={(e) => setBarcodeSearch(e.target.value)}
+    onKeyDown={(e) => {
+      if (e.key === "Enter") {
+        addByBarcode();
+      }
+    }}
+  />
+
+  <button
+    onClick={addByBarcode}
+    className="bg-green-500 px-6 py-4 rounded-2xl font-bold"
+  >
+    <FaBarcode className="inline mr-2" />
+    Add
+  </button>
+
+  <button
+    onClick={() => setShowScanner(true)}
+    className="bg-blue-500 px-6 py-4 rounded-2xl font-bold"
+  >
+    📷 Camera
+  </button>
+</div>
+
+{showScanner && (
+  <div className="mt-4 bg-black p-4 rounded-2xl">
+    <div id="reader"></div>
+  </div>
+)}
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
               <div>
