@@ -43,7 +43,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import { printThermalBill } from "./printThermalBill";
+import { printThermalBill } from "./utils/printThermalBill";
 
 const uiByCategory = {
   Clothing: {
