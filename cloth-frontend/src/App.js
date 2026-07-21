@@ -769,6 +769,8 @@ useEffect(() => {
 
       scanner.clear().catch(() => {});
       setShowScanner(false);
+setBarcodeSearch("");
+
     },
     () => {}
   );
