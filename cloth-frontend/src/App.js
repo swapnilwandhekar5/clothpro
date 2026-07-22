@@ -742,44 +742,7 @@ const scannerRef = useRef(null);
     addToCart(product);
     setBarcodeSearch("");
   };
-useEffect(() => {
-  if (!showScanner) return;
 
-  const scanner = new Html5QrcodeScanner(
-    "reader",
-    {
-      fps: 10,
-      qrbox: { width: 250, height: 120 },
-    },
-    false
-  );
-
-  scanner.render(
-    (decodedText) => {
-      setBarcodeSearch(decodedText);
-
-      const product = products.find(
-        (item) => String(item.barcode) === String(decodedText)
-      );
-
-      if (product) {
-        addToCart(product);
-      } else {
-        alert("Product not found ❌");
-      }
-
-      scanner.clear().catch(() => {});
-      setShowScanner(false);
-setBarcodeSearch("");
-
-    },
-    () => {}
-  );
-
-  return () => {
-    scanner.clear().catch(() => {});
-  };
-}, [showScanner, products]);
 
   const increaseQty = (id) => {
     setCart(
