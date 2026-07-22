@@ -345,7 +345,43 @@ const scannerRef = useRef(null);
   const upiId = user?.upiId || "";
   const category = user?.businessCategory || "Clothing";
   const ui = uiByCategory[category] || uiByCategory.Other;
+useEffect(() => {
+  if (!showScanner) return;
 
+  const scanner = new Html5QrcodeScanner(
+    "reader",
+    {
+      fps: 10,
+      qrbox: { width: 250, height: 120 },
+    },
+    false
+  );
+
+  scanner.render(
+    (decodedText) => {
+      setBarcodeSearch(decodedText);
+
+      const product = products.find(
+        (item) => String(item.barcode) === String(decodedText)
+      );
+
+      if (product) {
+        addToCart(product);
+      } else {
+        alert("Product not found ❌");
+      }
+
+      scanner.clear().catch(() => {});
+      setShowScanner(false);
+      setBarcodeSearch("");
+    },
+    () => {}
+  );
+
+  return () => {
+    scanner.clear().catch(() => {});
+  };
+}, [showScanner, products]);
   const renderCategoryFields = () => {
     const inputClass = "bg-slate-900 p-4 rounded-2xl";
 
