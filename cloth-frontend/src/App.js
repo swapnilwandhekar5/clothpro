@@ -30,7 +30,7 @@ import {
 
 import { motion } from "framer-motion";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import "html5-qrcode/html5-qrcode.css";
+// import "html5-qrcode/html5-qrcode.css";
 
 import {
   BarChart,
