@@ -723,6 +723,48 @@ useEffect(() => {
     fetchProducts();
     alert("Product Added ✅");
   };
+const printBarcode = async (product) => {
+  if (!product.barcode) {
+    alert("No Barcode Found");
+    return;
+  }
+
+  const canvas = document.createElement("canvas");
+
+  try {
+    const JsBarcode = (await import("jsbarcode")).default;
+
+    JsBarcode(canvas, product.barcode, {
+      format: "CODE128",
+      width: 2,
+      height: 70,
+      displayValue: true,
+    });
+
+    const win = window.open("", "_blank");
+
+    win.document.write(`
+      <html>
+      <head>
+        <title>Print Barcode</title>
+      </head>
+      <body style="text-align:center;margin-top:30px;">
+        <h2>${product.name}</h2>
+        <img src="${canvas.toDataURL()}"/>
+        <script>
+          window.print();
+          window.close();
+        </script>
+      </body>
+      </html>
+    `);
+
+    win.document.close();
+  } catch (err) {
+    alert("Install jsbarcode package");
+  }
+};
+
 
   const deleteProduct = async (id) => {
     await fetch(`https://clothpro.onrender.com/api/product/delete/${id}`, {
