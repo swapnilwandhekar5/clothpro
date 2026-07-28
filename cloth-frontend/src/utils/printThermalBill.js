@@ -7,7 +7,6 @@ export const printThermalBill = (data) => {
     customerAddress,
     customerGST,
     subtotal,
-    gst,
     discountAmount,
     finalTotal,
     qrImage,
@@ -17,7 +16,7 @@ export const printThermalBill = (data) => {
     category,
   } = data;
 
-  const win = window.open("", "", "width=320,height=900");
+  const win = window.open("", "", "width=350,height=900");
 
   const items = cart
     .map(
@@ -27,23 +26,18 @@ export const printThermalBill = (data) => {
 <td>${item.name}</td>
 <td>${item.qty}</td>
 <td>₹${Number(item.price).toFixed(2)}</td>
-<td class="right">₹${(
+<td style="text-align:right;">₹${(
         Number(item.qty) * Number(item.price)
       ).toFixed(2)}</td>
-</tr>
-`
+</tr>`
     )
     .join("");
 
   win.document.write(`
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
 <meta charset="UTF-8">
-
 <title>Thermal Bill</title>
 
 <style>
@@ -55,10 +49,10 @@ box-sizing:border-box;
 }
 
 body{
-width:80mm;
+width:72mm;
+padding:6px;
 font-family:monospace;
-font-size:12px;
-padding:8px;
+font-size:11px;
 color:#000;
 background:#fff;
 }
@@ -71,20 +65,34 @@ text-align:center;
 text-align:right;
 }
 
-.bold{
+.logo{
+width:60px;
+height:60px;
+object-fit:contain;
+display:block;
+margin:auto;
+}
+
+.shop{
+font-size:16px;
 font-weight:bold;
+margin-top:4px;
+}
+
+.small{
+font-size:10px;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
-margin-top:4px;
+table-layout:fixed;
 }
 
-th,
-td{
-padding:3px 0;
-font-size:12px;
+th,td{
+padding:3px 1px;
+font-size:11px;
+word-wrap:break-word;
 }
 
 hr{
@@ -93,25 +101,8 @@ border-top:1px dashed #000;
 margin:6px 0;
 }
 
-.logo{
-width:70px;
-height:70px;
-object-fit:contain;
-margin:auto;
-display:block;
-}
-
-.big{
-font-size:16px;
-font-weight:bold;
-}
-
-.small{
-font-size:10px;
-}
-
 .total{
-font-size:16px;
+font-size:15px;
 font-weight:bold;
 }
 
@@ -125,55 +116,70 @@ font-weight:bold;
 
 ${
   user.logoUrl
-    ? `<img src="${user.logoUrl}" class="logo">`
+    ? `<img src="${user.logoUrl}" class="logo"/>`
     : ""
 }
 
-<div class="big">${user.shopName}</div>
+<div class="shop">${user.shopName}</div>
 
 <div>${user.businessAddress || ""}</div>
 
-<div>📞 ${user.businessMobile || ""}</div>
+<div>${user.businessMobile || ""}</div>
 
-<div>GST : ${user.gstNumber || "-"}</div>
+${
+  user.gstNumber
+    ? `<div>GSTIN : ${user.gstNumber}</div>`
+    : ""
+}
 
 </div>
 
 <hr>
 
 <div><b>Customer :</b> ${customerName || "Walk-in Customer"}</div>
-
 <div><b>Phone :</b> ${customerPhone || "-"}</div>
-
 <div><b>Address :</b> ${customerAddress || "-"}</div>
 
-<div><b>GST :</b> ${customerGST || "-"}</div>
+${
+customerGST
+? `<div><b>Customer GST :</b> ${customerGST}</div>`
+: ""
+}
 
 <div><b>Date :</b> ${new Date().toLocaleString()}</div>
-${category === "Restaurant" ? `
+
+${
+category === "Restaurant"
+? `
 <div><b>Order :</b> ${orderType}</div>
 <div><b>Table :</b> ${tableNumber || "-"}</div>
-` : ""}
+`
+: ""
+}
 
 <hr>
 
 <table>
 
+<thead>
+
 <tr>
 
-<th>#</th>
-
-<th>Item</th>
-
-<th>Qty</th>
-
-<th>Rate</th>
-
-<th>Total</th>
+<th style="width:8%">#</th>
+<th style="width:40%">Item</th>
+<th style="width:12%">Qty</th>
+<th style="width:18%">Rate</th>
+<th style="width:22%">Amt</th>
 
 </tr>
 
+</thead>
+
+<tbody>
+
 ${items}
+
+</tbody>
 
 </table>
 
@@ -183,71 +189,58 @@ ${items}
 
 <tr>
 <td>Subtotal</td>
-<td class="right">₹${subtotal.toFixed(2)}</td>
-</tr>
-
-<tr>
-<td>GST (18%)</td>
-<td class="right">₹${gst.toFixed(2)}</td>
+<td class="right">₹${Number(subtotal).toFixed(2)}</td>
 </tr>
 
 <tr>
 <td>Discount</td>
-<td class="right">-₹${discountAmount.toFixed(2)}</td>
+<td class="right">-₹${Number(discountAmount).toFixed(2)}</td>
 </tr>
 
 <tr>
 
-<td class="total">Grand Total</td>
+<td class="total">TOTAL</td>
 
 <td class="right total">
-₹${finalTotal.toFixed(2)}
+₹${Number(finalTotal).toFixed(2)}
 </td>
 
 </tr>
 
 </table>
 
-<hr>
-
-<div class="center">
-
-<b>Payment</b>
-
-</div>
-${qrImage ? `
+${
+qrImage
+? `
 <hr>
 
 <div class="center">
 
 <img
 src="${qrImage}"
-style="width:140px;height:140px;"
+style="width:130px;height:130px;"
 />
 
 <div style="margin-top:5px;font-weight:bold;">
 Scan & Pay
 </div>
 
-<div>
-${upiId || ""}
-</div>
+<div>${upiId || ""}</div>
 
 </div>
-
-` : ""}
+`
+: ""
+}
 
 <hr>
 
 <div class="center">
 
-<div class="big">
-THANK YOU 🙏
+<div style="font-size:15px;font-weight:bold;">
+THANK YOU
 </div>
 
-<div>
-Visit Again
-</div>
+<div>Visit Again</div>
 
 <br>
 
@@ -257,20 +250,16 @@ Powered By SmartBiz OS
 
 </div>
 
+<script>
+window.print();
+setTimeout(function(){
+window.close();
+},500);
+</script>
+
 </body>
-
 </html>
-
 `);
 
-win.document.close();
-
-win.focus();
-
-win.print();
-
-setTimeout(() => {
-  win.close();
-}, 500);
-
+  win.document.close();
 };
