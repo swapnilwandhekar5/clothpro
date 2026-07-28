@@ -1936,6 +1936,12 @@ ${data.invoice?.invoiceNumber || ""}`);
                             >
                               <FaShoppingCart />
                             </button>
+<button
+  onClick={() => printBarcode(item)}
+  className="bg-purple-500 p-3 rounded-xl"
+>
+  <FaBarcode />
+</button>
                           </td>
                         </tr>
                       ))}
