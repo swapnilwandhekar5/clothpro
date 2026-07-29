@@ -16,7 +16,7 @@ export const printThermalBill = (data) => {
     category,
   } = data;
 
-  const win = window.open("", "", "width=350,height=900");
+  const win = window.open("", "_blank", "width=420,height=900");
 
   const items = cart
     .map(
@@ -24,8 +24,8 @@ export const printThermalBill = (data) => {
 <tr>
 <td>${index + 1}</td>
 <td>${item.name}</td>
-<td>${item.qty}</td>
-<td>₹${Number(item.price).toFixed(2)}</td>
+<td style="text-align:center;">${item.qty}</td>
+<td style="text-align:right;">₹${Number(item.price).toFixed(2)}</td>
 <td style="text-align:right;">₹${(
         Number(item.qty) * Number(item.price)
       ).toFixed(2)}</td>
@@ -48,13 +48,33 @@ padding:0;
 box-sizing:border-box;
 }
 
+@page{
+size:80mm auto;
+margin:0;
+}
+
+html{
+width:80mm;
+margin:0;
+padding:0;
+background:white;
+}
+
 body{
-width:72mm;
-padding:6px;
+width:80mm;
+margin:0 auto;
+padding:0;
+display:flex;
+justify-content:center;
 font-family:monospace;
-font-size:11px;
+background:white;
+}
+
+.bill{
+width:76mm;
+padding:6px;
 color:#000;
-background:#fff;
+font-size:11px;
 }
 
 .center{
@@ -71,12 +91,12 @@ height:60px;
 object-fit:contain;
 display:block;
 margin:auto;
+margin-bottom:5px;
 }
 
 .shop{
-font-size:16px;
+font-size:17px;
 font-weight:bold;
-margin-top:4px;
 }
 
 .small{
@@ -90,9 +110,13 @@ table-layout:fixed;
 }
 
 th,td{
-padding:3px 1px;
+padding:3px;
 font-size:11px;
-word-wrap:break-word;
+word-break:break-word;
+}
+
+th{
+border-bottom:1px dashed #000;
 }
 
 hr{
@@ -106,11 +130,20 @@ font-size:15px;
 font-weight:bold;
 }
 
+.qr{
+width:130px;
+height:130px;
+margin:auto;
+display:block;
+}
+
 </style>
 
 </head>
 
 <body>
+
+<div class="bill">
 
 <div class="center">
 
@@ -120,11 +153,17 @@ ${
     : ""
 }
 
-<div class="shop">${user.shopName}</div>
+<div class="shop">${user.shopName || ""}</div>
 
 <div>${user.businessAddress || ""}</div>
 
 <div>${user.businessMobile || ""}</div>
+
+${
+  user.businessEmail
+    ? `<div>${user.businessEmail}</div>`
+    : ""
+}
 
 ${
   user.gstNumber
@@ -137,24 +176,26 @@ ${
 <hr>
 
 <div><b>Customer :</b> ${customerName || "Walk-in Customer"}</div>
+
 <div><b>Phone :</b> ${customerPhone || "-"}</div>
+
 <div><b>Address :</b> ${customerAddress || "-"}</div>
 
 ${
 customerGST
-? `<div><b>Customer GST :</b> ${customerGST}</div>`
+? `<div><b>GST :</b> ${customerGST}</div>`
 : ""
 }
 
 <div><b>Date :</b> ${new Date().toLocaleString()}</div>
 
 ${
-category === "Restaurant"
-? `
+category==="Restaurant"
+?`
 <div><b>Order :</b> ${orderType}</div>
-<div><b>Table :</b> ${tableNumber || "-"}</div>
+<div><b>Table :</b> ${tableNumber||"-"}</div>
 `
-: ""
+:""
 }
 
 <hr>
@@ -165,11 +206,11 @@ category === "Restaurant"
 
 <tr>
 
-<th style="width:8%">#</th>
-<th style="width:40%">Item</th>
-<th style="width:12%">Qty</th>
-<th style="width:18%">Rate</th>
-<th style="width:22%">Amt</th>
+<th>#</th>
+<th>Item</th>
+<th>Qty</th>
+<th>Rate</th>
+<th>Amt</th>
 
 </tr>
 
@@ -188,13 +229,23 @@ ${items}
 <table>
 
 <tr>
+
 <td>Subtotal</td>
-<td class="right">₹${Number(subtotal).toFixed(2)}</td>
+
+<td class="right">
+₹${Number(subtotal).toFixed(2)}
+</td>
+
 </tr>
 
 <tr>
+
 <td>Discount</td>
-<td class="right">-₹${Number(discountAmount).toFixed(2)}</td>
+
+<td class="right">
+-₹${Number(discountAmount).toFixed(2)}
+</td>
+
 </tr>
 
 <tr>
@@ -211,32 +262,31 @@ ${items}
 
 ${
 qrImage
-? `
+?`
+
 <hr>
 
 <div class="center">
 
-<img
-src="${qrImage}"
-style="width:130px;height:130px;"
-/>
+<img src="${qrImage}" class="qr"/>
 
 <div style="margin-top:5px;font-weight:bold;">
 Scan & Pay
 </div>
 
-<div>${upiId || ""}</div>
+<div>${upiId||""}</div>
 
 </div>
+
 `
-: ""
+:""
 }
 
 <hr>
 
 <div class="center">
 
-<div style="font-size:15px;font-weight:bold;">
+<div style="font-size:16px;font-weight:bold;">
 THANK YOU
 </div>
 
@@ -250,11 +300,22 @@ Powered By SmartBiz OS
 
 </div>
 
+</div>
+
 <script>
+
+window.onload=function(){
+
 window.print();
+
 setTimeout(function(){
+
 window.close();
+
 },500);
+
+}
+
 </script>
 
 </body>
