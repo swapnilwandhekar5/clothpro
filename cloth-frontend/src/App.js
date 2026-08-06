@@ -1696,7 +1696,7 @@ Powered By SmartBiz OS
       }
 
      
-printThermalBill({
+printInvoice({
   user,
   cart,
   customerName,
@@ -1707,11 +1707,6 @@ printThermalBill({
   gst,
   discountAmount,
   finalTotal,
-  qrImage,
-  upiId,
-  orderType,
-  tableNumber,
-  category,
 });
       setCart([]);
       setCustomerName("");
