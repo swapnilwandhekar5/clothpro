@@ -44,6 +44,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { printThermalBill } from "./utils/printThermalBill";
+import { printInvoice } from "./utils/printInvoice";
 
 const uiByCategory = {
   Clothing: {
