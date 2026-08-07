@@ -2314,20 +2314,7 @@ ${data.invoice?.invoiceNumber || ""}`);
                 </button>
                   <button
   onClick={() =>
-    printInvoice({
-      user,
-      cart,
-      customerName,
-      customerPhone,
-      customerAddress,
-      customerGST,
-      subtotal,
-      gst,
-      discountAmount,
-      finalTotal,
-      qrImage,
-      upiId,
-    })
+    printTallyDocument("Invoice");
   }
   className="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 p-4 rounded-2xl text-xl font-bold"
 >
