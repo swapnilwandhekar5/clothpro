@@ -1398,9 +1398,14 @@ border-collapse:collapse;
     win.print();
   };
 
-  const printInvoice = () => {
-    printTallyDocument("Invoice");
-  };
+const printInvoice = () => {
+  if (cart.length === 0) {
+    alert("Cart empty ❌");
+    return;
+  }
+
+  printTallyDocument("Invoice");
+}; 
 
   const printQuotation = () => {
     if (cart.length === 0) {
