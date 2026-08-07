@@ -1582,18 +1582,7 @@ Powered By SmartBiz OS
       }
 
      
-printInvoice({
-  user,
-  cart,
-  customerName,
-  customerPhone,
-  customerAddress,
-  customerGST,
-  subtotal,
-  gst,
-  discountAmount,
-  finalTotal,
-});
+printInvoice();
       setCart([]);
       setCustomerName("");
       setCustomerPhone("");
